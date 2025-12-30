@@ -6,16 +6,41 @@ export interface User {
   name: string;
 }
 
+// ======================= 
+// OLD FRONTEND BOOK MODEL 
+// =======================
+// export interface Book {
+//   id: string;
+//   title: string;
+//   author: string;
+//   isbn: string;
+//   imageUrl: string;
+//   available: boolean;
+//   description: string;
+//   quantity: number;
+//   availableQuantity: number;
+// }
+
+// ======================= 
+// NEW BACKEND BOOK MODEL 
+// =======================
 export interface Book {
-  id: string;
-  title: string;
-  author: string;
   isbn: string;
-  imageUrl: string;
-  available: boolean;
-  description: string;
-  quantity: number;
-  availableQuantity: number;
+  title: string;
+  language: string;
+  bookCover: string;
+  nameAuthor: string;
+  nameCategory: string;
+  subtopicCategory: string;
+}
+
+
+// ========================
+// NEW BACKEND AUTHOR MODEL
+// ========================
+export interface Author {
+  authorId: number; 
+  nameAuthor: string; 
 }
 
 export interface BorrowRecord {

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Book as BookIcon, Plus, Users, Search, X, BookOpen, Calendar, Users2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Book, BorrowedBookDetails } from '../types';
-import { addBook, getBooks, updateBook, updateBookQuantity, getAllBorrowedBooks } from '../utils/books';
+// Cambio
+import { addBook, updateBook, updateBookQuantity, getAllBorrowedBooks } from '../utils/books';
+import { getBooks } from '../utils/books.api';
+// Fin Cambio
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
@@ -180,11 +183,12 @@ const AdminDashboard = () => {
     );
   }
 
-  const filteredBooks = books.filter(book => 
+    const filteredBooks = books.filter(book => 
     book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
     book.isbn.includes(searchQuery)
   );
+
 
   const activeBorrows = borrowedBooks.filter(record => !record.returnDate);
   const completedBorrows = borrowedBooks.filter(record => record.returnDate);
