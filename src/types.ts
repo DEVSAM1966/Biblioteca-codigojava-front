@@ -6,24 +6,9 @@ export interface User {
   name: string;
 }
 
-// ======================= 
-// OLD FRONTEND BOOK MODEL 
-// =======================
-// export interface Book {
-//   id: string;
-//   title: string;
-//   author: string;
-//   isbn: string;
-//   imageUrl: string;
-//   available: boolean;
-//   description: string;
-//   quantity: number;
-//   availableQuantity: number;
-// }
-
-// ======================= 
-// NEW BACKEND BOOK MODEL 
-// =======================
+// ============================ 
+// NEW BACKEND BOOK LIGHT MODEL 
+// ============================
 export interface Book {
   isbn: string;
   title: string;
@@ -34,6 +19,30 @@ export interface Book {
   subtopicCategory: string;
 }
 
+// ============================ 
+// NEW BACKEND BOOK HIGH MODEL 
+// ============================
+export interface DetailedBook {
+  isbn: string;
+  title: string;
+  pages: number | null;
+  summary: string | null;
+  editionDate: string | null;
+  bookCover: string | null;
+  language: string | null;
+  nameAuthor: string | null;
+  authors: string | null; 
+  nameCategory: string | null;
+  subtopicCategory: string | null;
+  namePublisher: string | null;
+}
+
+// ========================
+// FIND FILE BOOK MODEL
+// ========================
+export interface BookFileResponse {
+  fileUrl: string;
+}
 
 // ========================
 // NEW BACKEND AUTHOR MODEL

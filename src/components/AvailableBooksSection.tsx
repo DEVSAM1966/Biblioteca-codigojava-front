@@ -8,6 +8,9 @@ interface AvailableBooksSectionProps {
   setSelectedBook: (book: Book | null) => void;
   handleBorrow: (id: string) => void;
   BACKEND_URL: string;
+
+  // 🆕 NUEVO 
+  onReadLater: (isbn: string) => void;
 }
 
 export const AvailableBooksSection = ({
@@ -15,7 +18,8 @@ export const AvailableBooksSection = ({
   selectedBook,
   setSelectedBook,
   handleBorrow,
-  BACKEND_URL
+  BACKEND_URL,
+  onReadLater   // 🆕 NUEVO
 }: AvailableBooksSectionProps) => {
   return (
     <motion.div
@@ -100,10 +104,11 @@ export const AvailableBooksSection = ({
                       onClick={(e) => {
                         e.stopPropagation();
                         console.log("Read later:", book.isbn);
+                        onReadLater(book.isbn);
                       }}
                       className="px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 text-gray-800 border border-gray-300 hover:bg-gray-300 transition-all duration-300"
                     >
-                      Read later
+                      Watch
                     </motion.button>
 
                     {/* Borrow */}
