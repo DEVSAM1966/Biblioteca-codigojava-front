@@ -6,10 +6,8 @@ interface AvailableBooksSectionProps {
   filteredBooks: Book[];
   selectedBook: Book | null;
   setSelectedBook: (book: Book | null) => void;
-  handleBorrow: (id: string) => void;
+  handleBorrow: (isbn: string) => void;
   BACKEND_URL: string;
-
-  // 🆕 NUEVO 
   onReadLater: (isbn: string) => void;
 }
 
@@ -19,7 +17,7 @@ export const AvailableBooksSection = ({
   setSelectedBook,
   handleBorrow,
   BACKEND_URL,
-  onReadLater   // 🆕 NUEVO
+  onReadLater
 }: AvailableBooksSectionProps) => {
   return (
     <motion.div
@@ -55,7 +53,7 @@ export const AvailableBooksSection = ({
               <div className="relative w-full md:w-1/3">
                 <div className="aspect-[3/4] relative">
                   <img
-                    src={`${BACKEND_URL}${book.bookCover}`}
+                    src={`${BACKEND_URL}/${book.bookCover}`}
                     alt={book.title}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
@@ -86,24 +84,20 @@ export const AvailableBooksSection = ({
                 </div>
 
                 <div className="flex justify-between items-center mt-auto">
-                  <span
-                    className={`px-4 py-1.5 rounded-full text-sm font-medium ${
-                      book.availableQuantity > 0
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {book.availableQuantity} of {book.quantity} available
+                  
+                  {/* Availability Badge */}
+                  <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    Available to read
                   </span>
 
                   <div className="flex items-center gap-2">
+                    
                     {/* Read Later */}
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        console.log("Read later:", book.isbn);
                         onReadLater(book.isbn);
                       }}
                       className="px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 text-gray-800 border border-gray-300 hover:bg-gray-300 transition-all duration-300"
@@ -112,21 +106,20 @@ export const AvailableBooksSection = ({
                     </motion.button>
 
                     {/* Borrow */}
-                    {book.availableQuantity > 0 && (
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleBorrow(book.id);
-                        }}
-                        className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-blue-500/20"
-                      >
-                        <BookOpen className="h-4 w-4" />
-                        <span>Borrow</span>
-                        <ArrowRight className="h-4 w-4" />
-                      </motion.button>
-                    )}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBorrow(book.isbn);
+                      }}
+                      className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-blue-500/20"
+                    >
+                      <BookOpen className="h-4 w-4" />
+                      <span>Borrow</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </motion.button>
+
                   </div>
                 </div>
               </div>
@@ -137,3 +130,4 @@ export const AvailableBooksSection = ({
     </motion.div>
   );
 };
+

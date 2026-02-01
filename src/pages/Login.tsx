@@ -1,66 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogIn, Library, Mail, Lock } from 'lucide-react';
-import { login, loginWithGoogle } from '../utils/auth';
+import { loginApi } from '../utils/auth.api';
+import { saveAuthData } from '../utils/auth.storage';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
 const Login = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.removeItem("auth_user");
+    localStorage.removeItem("auth_token");
+  }, []);
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      const user = await login(formData.email, formData.password);
-      if (user) {
-        toast.success('Welcome back!', {
-          icon: '👋',
-          style: {
-            borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
-          },
-        });
-        navigate(user.role === 'admin' ? '/admin' : '/dashboard');
-      } else {
-        toast.error('Invalid credentials');
+      const email = formData.email.trim();
+      const password = formData.password.trim();
+
+      const result = await loginApi(email, password);
+
+      if (import.meta.env.DEV) {
+        console.log("LOGIN RESULT:", result);
+        console.log("ROLE FROM BACKEND:", result.user.role);
       }
-    } catch (error) {
+
+      saveAuthData(result.user, result.authorization);
+
+      toast.success('Welcome back!', {
+        icon: '👋',
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      });
+
+      setFormData({ email: '', password: '' });
+
+      navigate(result.user.role === 'ADMIN' ? '/admin' : '/dashboard');
+
+    } catch (error: any) {
       console.error('Login error:', error);
-      toast.error('Login failed');
+      toast.error(error.message ?? 'Invalid email or password');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setGoogleLoading(true);
-    try {
-      const user = await loginWithGoogle();
-      if (user) {
-        toast.success('Welcome!', {
-          icon: '👋',
-          style: {
-            borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
-          },
-        });
-        navigate(user.role === 'admin' ? '/admin' : '/dashboard');
-      }
-    } catch (error) {
-      console.error('Google login error:', error);
-      toast.error('Google login failed');
-    } finally {
-      setGoogleLoading(false);
-    }
+  const handleGoogleLogin = () => {
+    toast.error("Google login is disabled in this version");
   };
 
   return (
@@ -70,7 +69,6 @@ const Login = () => {
         backgroundImage: `url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2000&auto=format&fit=crop')`,
       }}
     >
-      {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-gray-900/90 to-purple-900/90 backdrop-blur-sm" />
 
       <motion.div
@@ -91,6 +89,7 @@ const Login = () => {
                 <Library className="h-12 w-12 text-white" />
               </motion.div>
             </div>
+
             <motion.h2
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -99,6 +98,7 @@ const Login = () => {
             >
               Welcome Back
             </motion.h2>
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -118,6 +118,7 @@ const Login = () => {
                   />
                 </div>
               </motion.div>
+
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -136,6 +137,7 @@ const Login = () => {
                   />
                 </div>
               </motion.div>
+
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -169,32 +171,26 @@ const Login = () => {
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleGoogleLogin}
-                  disabled={googleLoading}
-                  className="w-full bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] motion-safe:transition border border-white/20"
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
                 >
-                  {googleLoading ? (
+                  <button
+                    type="button"
+                    onClick={handleGoogleLogin}
+                    disabled={true}
+                    className="w-full bg-white/10 text-white px-6 py-3 rounded-xl opacity-50 cursor-not-allowed border border-white/20"
+                  >
                     <div className="flex items-center justify-center">
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                      Connecting...
+                      Google login disabled
                     </div>
-                  ) : (
-                    <div className="flex items-center justify-center">
-                      <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                        <path
-                          fill="currentColor"
-                          d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27 3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10 5.35 0 9.25-3.67 9.25-9.09 0-1.15-.15-1.81-.15-1.81Z"
-                        />
-                      </svg>
-                      Sign in with Google
-                    </div>
-                  )}
-                </button>
+                  </button>
+                </motion.div>
               </motion.div>
             </form>
           </div>
+
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

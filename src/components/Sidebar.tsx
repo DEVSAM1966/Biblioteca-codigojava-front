@@ -6,13 +6,11 @@ import {
   Menu, 
   X, 
   Home,
-  BookOpen,
   Settings,
-  ChevronRight,
-  User as UserIcon
+  ChevronRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getCurrentUser } from '../utils/auth';
+import { getCurrentUser } from '../utils/auth.storage';
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -34,12 +32,13 @@ const Sidebar = () => {
       label: 'Admin Dashboard',
       icon: Settings,
       path: '/admin',
-      show: currentUser.role === 'admin',
+      show: currentUser.role === 'ADMIN',
     },
   ];
 
   const handleLogout = () => {
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
     navigate('/login');
   };
 
@@ -53,14 +52,15 @@ const Sidebar = () => {
     closed: { x: '-100%', opacity: 0 }
   };
 
-  const Sidebar = () => (
+  // DESKTOP SIDEBAR
+  const DesktopSidebar = () => (
     <motion.div
       variants={sidebarVariants}
       initial="expanded"
       animate={isCollapsed ? 'collapsed' : 'expanded'}
       className="hidden lg:flex flex-col h-screen fixed left-0 top-0 bg-white border-r border-gray-200 shadow-lg"
     >
-      {/* Logo Section */}
+      {/* Logo */}
       <div className="p-4 flex items-center justify-between border-b border-gray-200">
         <Link to="/" className="flex items-center space-x-3">
           <Library className="h-8 w-8 text-blue-500" />
@@ -77,6 +77,7 @@ const Sidebar = () => {
             )}
           </AnimatePresence>
         </Link>
+
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="text-gray-500 hover:text-gray-700 transition-colors"
@@ -85,15 +86,16 @@ const Sidebar = () => {
         </button>
       </div>
 
-      {/* User Profile Section */}
+      {/* User Profile */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center space-x-3">
           <div className="relative">
             <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white">
-              {currentUser.name.charAt(0).toUpperCase()}
+              {currentUser.fullname.charAt(0).toUpperCase()}
             </div>
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
           </div>
+
           <AnimatePresence>
             {!isCollapsed && (
               <motion.div
@@ -102,7 +104,7 @@ const Sidebar = () => {
                 exit={{ opacity: 0, width: 0 }}
                 className="flex flex-col"
               >
-                <span className="text-gray-900 font-medium truncate">{currentUser.name}</span>
+                <span className="text-gray-900 font-medium truncate">{currentUser.fullname}</span>
                 <span className="text-gray-500 text-sm truncate">{currentUser.email}</span>
               </motion.div>
             )}
@@ -110,7 +112,7 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Navigation Section */}
+      {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         {menuItems
           .filter(item => item.show)
@@ -139,6 +141,7 @@ const Sidebar = () => {
                     </motion.span>
                   )}
                 </AnimatePresence>
+
                 {isActive && (
                   <motion.div
                     layoutId="activeIndicator"
@@ -150,7 +153,7 @@ const Sidebar = () => {
           })}
       </nav>
 
-      {/* Logout Section */}
+      {/* Logout */}
       <div className="p-4 border-t border-gray-200">
         <button
           onClick={handleLogout}
@@ -174,9 +177,10 @@ const Sidebar = () => {
     </motion.div>
   );
 
+  // MOBILE SIDEBAR
   const MobileSidebar = () => (
     <>
-      {/* Mobile Toggle Button */}
+      {/* Toggle Button */}
       <button
         onClick={() => setIsMobileOpen(true)}
         className="lg:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors border border-gray-200"
@@ -184,7 +188,6 @@ const Sidebar = () => {
         <Menu className="h-6 w-6" />
       </button>
 
-      {/* Mobile Sidebar */}
       <AnimatePresence>
         {isMobileOpen && (
           <>
@@ -195,6 +198,7 @@ const Sidebar = () => {
               onClick={() => setIsMobileOpen(false)}
               className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-50"
             />
+
             <motion.div
               variants={mobileSidebarVariants}
               initial="closed"
@@ -202,6 +206,7 @@ const Sidebar = () => {
               exit="closed"
               className="lg:hidden fixed left-0 top-0 h-screen w-[280px] bg-white border-r border-gray-200 shadow-xl z-50"
             >
+              {/* Header */}
               <div className="p-4 flex items-center justify-between border-b border-gray-200">
                 <Link to="/" className="flex items-center space-x-3">
                   <Library className="h-8 w-8 text-blue-500" />
@@ -209,6 +214,7 @@ const Sidebar = () => {
                     Library System
                   </span>
                 </Link>
+
                 <button
                   onClick={() => setIsMobileOpen(false)}
                   className="text-gray-500 hover:text-gray-700 transition-colors"
@@ -217,21 +223,24 @@ const Sidebar = () => {
                 </button>
               </div>
 
+              {/* User */}
               <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center space-x-3">
                   <div className="relative">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white">
-                      {currentUser.name.charAt(0).toUpperCase()}
+                      {currentUser.fullname.charAt(0).toUpperCase()}
                     </div>
                     <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
                   </div>
+
                   <div className="flex flex-col">
-                    <span className="text-gray-900 font-medium">{currentUser.name}</span>
+                    <span className="text-gray-900 font-medium">{currentUser.fullname}</span>
                     <span className="text-gray-500 text-sm">{currentUser.email}</span>
                   </div>
                 </div>
               </div>
 
+              {/* Navigation */}
               <nav className="flex-1 p-4 space-y-2">
                 {menuItems
                   .filter(item => item.show)
@@ -250,6 +259,7 @@ const Sidebar = () => {
                       >
                         <item.icon className={`h-5 w-5 ${isActive ? 'text-blue-500' : 'group-hover:text-blue-500'}`} />
                         <span>{item.label}</span>
+
                         {isActive && (
                           <motion.div
                             layoutId="mobileActiveIndicator"
@@ -261,6 +271,7 @@ const Sidebar = () => {
                   })}
               </nav>
 
+              {/* Logout */}
               <div className="p-4 border-t border-gray-200">
                 <button
                   onClick={handleLogout}
@@ -279,7 +290,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <Sidebar />
+      <DesktopSidebar />
       <MobileSidebar />
     </>
   );

@@ -18,9 +18,10 @@ export const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
 
       <input
         type="text"
+        aria-label="Search books"
         placeholder="Search books by title, author, or ISBN..."
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={(e) => setSearchQuery(e.target.value.trimStart())}
         className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 
                    focus:border-blue-500 focus:ring-2 focus:ring-blue-500 
                    focus:ring-opacity-20 transition-colors"
