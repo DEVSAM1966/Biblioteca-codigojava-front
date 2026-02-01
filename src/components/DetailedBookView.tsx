@@ -6,7 +6,7 @@ interface DetailedBookViewProps {
   book: DetailedBook;
   onLoan: (isbn: string) => void;
   BACKEND_URL: string;
-  onBack: () => void; // 🆕 NUEVO
+  onBack: () => void;
 }
 
 export const DetailedBookView = ({ book, onLoan, BACKEND_URL, onBack }: DetailedBookViewProps) => {
@@ -18,10 +18,10 @@ export const DetailedBookView = ({ book, onLoan, BACKEND_URL, onBack }: Detailed
     >
       <div className="flex justify-between items-center mb-4">
         <button
-          onClick={() => onBack()}
+          onClick={onBack}
           className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
         >
-        ← Back
+          ← Back
         </button>
       </div>
       
@@ -29,7 +29,7 @@ export const DetailedBookView = ({ book, onLoan, BACKEND_URL, onBack }: Detailed
 
         {/* Cover */}
         <img
-          src={`${BACKEND_URL}${book.bookCover}`}
+          src={`${BACKEND_URL}/${book.bookCover}`}
           alt={book.title}
           className="w-64 h-auto rounded-lg shadow-md"
         />

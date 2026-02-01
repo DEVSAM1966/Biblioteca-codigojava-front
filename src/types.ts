@@ -1,10 +1,16 @@
 export interface User {
-  id: string;
-  email: string;
-  password: string;
-  role: 'admin' | 'user';
-  name: string;
+  userId: number;
+  fullname: string;
+  registrationDate: string;
+  role: 'ADMIN' | 'SUPPORT' | 'USER';
+  userDrop: boolean;
 }
+
+export interface SignDto {
+  user: User;
+  authorization: string;
+}
+
 
 // ============================ 
 // NEW BACKEND BOOK LIGHT MODEL 
@@ -65,3 +71,29 @@ export interface BorrowedBookDetails extends BorrowRecord {
   book: Book;
   user: User;
 }
+
+// ============================
+// BACKEND LOAN RAW MODEL
+// ============================
+export interface LoanBackend {
+  loanId: number;
+  loanDate: string | null;
+  returnDate: string | null;
+  userId: number | null;
+  isbn: string | null;
+}
+
+// ============================
+// FRONTEND ACTIVE LOAN MODEL
+// ============================
+export interface ActiveLoan {
+  loanId: number;        // ID del préstamo
+  loanDate: string;      // Fecha del préstamo (YYYY-MM-DD)
+  returnDate?: string;   // Fecha de devolución (opcional)
+  isbn: string;          // ISBN del libro
+  userId: number;        // ID del usuario
+
+  // Campo calculado en frontend 
+  dueDate?: string;
+}
+

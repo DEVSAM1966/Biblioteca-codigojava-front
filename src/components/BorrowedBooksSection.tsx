@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
-import { BookOpenCheck, Clock, CheckCircle } from "lucide-react";
-import { Book, BorrowRecord } from "../types";
+import { BookOpen, RotateCcw, Clock } from "lucide-react";
+import { Book, ActiveLoan } from "../types";
 
 interface BorrowedBooksSectionProps {
   books: Book[];
-  borrowedBooks: BorrowRecord[];
+  borrowedBooks: ActiveLoan[];
   handleReturn: (isbn: string) => void;
   getDaysRemaining: (dueDate: string) => number;
 }
@@ -13,11 +13,8 @@ export const BorrowedBooksSection = ({
   books,
   borrowedBooks,
   handleReturn,
-  getDaysRemaining
+  getDaysRemaining,
 }: BorrowedBooksSectionProps) => {
-  
-  const borrowedBookIds = borrowedBooks.map((record) => record.bookId);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -26,93 +23,80 @@ export const BorrowedBooksSection = ({
       className="relative"
     >
       <div className="flex items-center gap-3 mb-6">
-        <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-2 rounded-lg">
-          <BookOpenCheck className="h-6 w-6 text-white" />
+        <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-lg">
+          <BookOpen className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">Currently Reading</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Borrowed Books</h2>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {books
-          .filter((book) => borrowedBookIds.includes(book.isbn))
-          .map((book, index) => {
-            const borrowRecord = borrowedBooks.find(
-              (record) => record.bookId === book.isbn
-            );
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {borrowedBooks.map((loan, index) => {
+          const book = books.find((b) => b.isbn === loan.bookId);
 
-            const daysRemaining = borrowRecord
-              ? getDaysRemaining(borrowRecord.dueDate)
-              : 0;
+          if (!book) return null;
 
-            return (
-              <motion.div
-                key={book.isbn}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-                className="group bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-amber-100/50"
-              >
-                <div className="flex flex-col md:flex-row">
-                  
-                  {/* Book Cover */}
-                  <div className="relative w-full md:w-1/3">
-                    <div className="aspect-[3/4] relative">
-                      <img
-                        src={book.bookCover}
-                        alt={book.title}
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-                  </div>
+          const daysRemaining = getDaysRemaining(loan.dueDate);
+          const isOverdue = daysRemaining < 0;
 
-                  {/* Book Details */}
-                  <div className="flex-1 p-6">
-                    <div className="mb-4">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors">
-                        {book.title}
-                      </h3>
-                      <p className="text-gray-600 mb-2">By {book.nameAuthor}</p>
-                      <p className="text-sm text-gray-500 mb-4">ISBN: {book.isbn}</p>
-
-                      <div className="mb-4">
-                        <p className="text-gray-700 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
-                          {book.nameCategory} - {book.subtopicCategory}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 mb-4">
-                      <Clock className="h-4 w-4 text-amber-500" />
-                      <span
-                        className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                          daysRemaining > 2
-                            ? "bg-green-100 text-green-800"
-                            : daysRemaining > 0
-                            ? "bg-amber-100 text-amber-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {daysRemaining > 0
-                          ? `${daysRemaining} days remaining`
-                          : "Overdue"}
-                      </span>
-                    </div>
-
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleReturn(book.isbn)}
-                      className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2.5 rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
-                    >
-                      <CheckCircle className="h-4 w-4" />
-                      Return Book
-                    </motion.button>
+          return (
+            <motion.div
+              key={loan.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="group bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300"
+            >
+              <div className="flex flex-col md:flex-row">
+                
+                {/* Book Cover */}
+                <div className="relative w-full md:w-1/3">
+                  <div className="aspect-[3/4] relative">
+                    <img
+                      src={book.bookCover}
+                      alt={book.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                 </div>
-              </motion.div>
-            );
-          })}
+
+                {/* Book Details */}
+                <div className="flex-1 p-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
+                    {book.title}
+                  </h3>
+                  <p className="text-lg text-gray-600 mb-2">By {book.nameAuthor}</p>
+                  <p className="text-sm text-gray-500 mb-4">ISBN: {book.isbn}</p>
+
+                  {/* Due Date */}
+                  <div className="flex items-center gap-2 mb-4">
+                    <Clock className="h-5 w-5 text-gray-500" />
+                    <span
+                      className={`text-sm font-medium ${
+                        isOverdue ? "text-red-600" : "text-gray-700"
+                      }`}
+                    >
+                      {isOverdue
+                        ? `Overdue by ${Math.abs(daysRemaining)} days`
+                        : `${daysRemaining} days remaining`}
+                    </span>
+                  </div>
+
+                  {/* Return Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleReturn(book.isbn)}
+                    className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-rose-600 text-white px-4 py-2 rounded-lg hover:from-red-600 hover:to-rose-700 transition-all duration-300 shadow-lg shadow-red-500/20"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                    <span>Return</span>
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </motion.div>
   );

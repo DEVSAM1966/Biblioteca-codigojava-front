@@ -19,7 +19,7 @@ function App() {
         <div className="lg:pl-[240px] min-h-screen">
           <div className="container mx-auto px-4 py-8">
             <Routes>
-              <Route path="/" element={currentUser ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+              <Route path="/" element={<Navigate to="/login" />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route

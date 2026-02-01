@@ -18,7 +18,8 @@ export const DashboardHeader = ({
     <motion.div
       ref={headerRef}
       initial={{ opacity: 0, y: -20 }}
-      animate={headerInView ? { opacity: 1, y: 0 } : {}}
+      animate={headerInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
       className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-8 md:p-12"
     >
       <div className="relative z-10">
@@ -41,7 +42,7 @@ export const DashboardHeader = ({
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl">
             <BookOpen className="h-5 w-5" />
             <span className="font-medium">
-              {availableCount} Book{availableCount !== 1 ? "s" : ""} Available
+              {availableCount} Book{availableCount !== 1 ? "s" : ""} Found
             </span>
           </div>
         </div>
