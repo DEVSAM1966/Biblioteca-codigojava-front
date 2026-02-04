@@ -24,7 +24,7 @@ export const DashboardHeader = ({
     >
       <div className="relative z-10">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          Welcome to Library CodigoJava
+          Welcome to Library Code Java
         </h1>
 
         <p className="text-lg text-blue-100 max-w-2xl">
