@@ -3,18 +3,19 @@ import { getCurrentUser } from '../utils/auth';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRole?: 'admin' | 'user';
+  allowedRoles?: string[]; // lista de roles permitidos
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRole }) => {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
   const currentUser = getCurrentUser();
 
   if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRole && currentUser.role !== allowedRole) {
-    return <Navigate to="/" replace />;
+  // Si hay roles permitidos, comprobar si el usuario pertenece a alguno
+  if (allowedRoles && !allowedRoles.includes(currentUser.role)) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
