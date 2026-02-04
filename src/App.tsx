@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import AdminDashboard from './pages/AdminDashboard';
+import AdminDashboard from './pages/AdminDashbord';
 import UserDashboard from './pages/UserDashboard';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import Sidebar from './components/Sidebar';
@@ -25,7 +25,7 @@ function App() {
               <Route
                 path="/admin"
                 element={
-                  <ProtectedRoute allowedRole="admin">
+                  <ProtectedRoute allowedRole={['ADMIN', 'SUPPORT']}>
                     <AdminDashboard />
                   </ProtectedRoute>
                 }
