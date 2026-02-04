@@ -23,7 +23,7 @@ const Sidebar = () => {
 
   const menuItems = [
     {
-      label: 'Dashboard',
+      label: 'User Dashboard',
       icon: Home,
       path: '/dashboard',
       show: true,
@@ -32,7 +32,7 @@ const Sidebar = () => {
       label: 'Admin Dashboard',
       icon: Settings,
       path: '/admin',
-      show: currentUser.role === 'ADMIN',
+      show: currentUser.role === 'ADMIN' || currentUser.role === 'SUPPORT',
     },
   ];
 
@@ -72,7 +72,7 @@ const Sidebar = () => {
                 exit={{ opacity: 0, width: 0 }}
                 className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text whitespace-nowrap"
               >
-                Library System
+                Library Code Java
               </motion.span>
             )}
           </AnimatePresence>
@@ -211,7 +211,7 @@ const Sidebar = () => {
                 <Link to="/" className="flex items-center space-x-3">
                   <Library className="h-8 w-8 text-blue-500" />
                   <span className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
-                    Library System
+                    Library Code Java
                   </span>
                 </Link>
 
