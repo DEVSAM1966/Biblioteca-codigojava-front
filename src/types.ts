@@ -97,3 +97,17 @@ export interface ActiveLoan {
   dueDate?: string;
 }
 
+// ===========================
+// NEW BACKEND PUBLISHER MODEL
+// ===========================
+export interface Publisher {
+        publisherId: number;
+        namePublisher: string;
+        address: string | null;
+        city: string | null;
+        province: string | null;
+        postalCode: string | null;
+        country: string | null;
+        phone: string | null;
+        notes: string | null;
+}
