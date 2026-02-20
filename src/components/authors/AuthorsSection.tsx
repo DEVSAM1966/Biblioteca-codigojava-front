@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Eye, Pencil, Trash2, Plus } from "lucide-react";
+import axios from "axios";
 import AuthorViewModal from "./AuthorViewModal";
 import AuthorCreateModal from "./AuthorCreateModal";
 import AuthorEditModal from "./AuthorEditModal";
@@ -71,7 +72,7 @@ const AuthorsSection: React.FC = () => {
 
   // 🔵 Mostrar estados de carga o error 
   if (loading) return <div>Cargando autores...</div>; 
-  if (error) return <div className="text-red-600">{error}</div>; 
+  // if (error) return <div className="text-red-600">{error}</div>; 
 
   // 🔵 Filtrado en tiempo real con los datos que exista en frontend
   // const filteredAuthors = authors.filter((a) =>
@@ -90,9 +91,15 @@ const AuthorsSection: React.FC = () => {
   // 🔵 Crear autor
   const handleCreateAuthor = async (nameAuthor: string) => {
     try { 
-      const created = await authorsService.create(nameAuthor); 
+      const authorToCreate: Author = {
+        authorId: 0, // El backend asignará el ID real
+        nameAuthor
+      };
+      const created = await authorsService.create(authorToCreate); 
       setAuthors((prev) => [...prev, created]); 
+      setShowCreateModal(false);
     } catch (err) { 
+      console.error("Error al crear editorial:", err);
       setError("No autorizado o error al crear autor"); 
     }
   };
@@ -100,12 +107,20 @@ const AuthorsSection: React.FC = () => {
   // 🔵 Editar autor
   const handleUpdateAuthor = async (id: number, nameAuthor: string) => {
     try {
-      const updated = await authorsService.update(id, nameAuthor);
+      const updatedAuthor: Author = { 
+        authorId: id, 
+        nameAuthor 
+      };
+
+      const updated = await authorsService.update(id, updatedAuthor);
 
       setAuthors((prev) =>
         prev.map((a) => (a.authorId === id ? updated : a))
       );
+
+      setEditAuthor(null);
     } catch (err) {
+      console.error("Error al actualizar autor:", err);
       setError("No autorizado o error al actualizar autor");
     }
   };
@@ -116,6 +131,7 @@ const AuthorsSection: React.FC = () => {
       await authorsService.remove(id);
       setAuthors((prev) => prev.filter((a) => a.authorId !== id));
     } catch (err) {
+      console.error("Error al borrar autor:", err);
       setError("No autorizado o error al eliminar autor");
     }
   };
@@ -143,18 +159,29 @@ const AuthorsSection: React.FC = () => {
                   // Input vacío → cargar todos
                   const all = await authorsService.getAll();
                   setAuthors(all);
+                  setError(null);
                 } else {
                   // Input con texto → buscar en backend
                   const results = await authorsService.searchByName(value);
+                  if (results.length === 0) {
+                    setAuthors([]);
+                    setError(null);
+                    return
+                  }
                   setAuthors(results);
+                  setError(null);
                 }
               } catch (err) {
-                setError("No autorizado o error al buscar autores");
+                console.error("ERROR EN BÚSQUEDA DE AUTORES:", err);
+
+                setError("Erroral buscar autores");
+                setAuthors([]);
               }
             }}
             className="px-3 py-2 border rounded-lg w-64 focus:ring-2 focus:ring-blue-500 outline-none"
           />
 
+          {/* 🔵 Botón de crear editor */}
           <button
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
             onClick={() => setShowCreateModal(true)}
@@ -164,6 +191,27 @@ const AuthorsSection: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* 🔵 Mensaje cuando no hay resultados y fuera del flex*/}
+        {error && (
+            <div className="mt-4 p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
+                <p className="text-red-800 font-medium">
+                    {error}
+                </p>
+
+                <button
+                    onClick={async () => {
+                        const all = await authorsService.getAll();
+                        setAuthors(all);
+                        setSearch("");
+                        setError(null);
+                    }}
+                    className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                >
+                    Recargar todos los autores
+                </button>
+            </div>
+        )}
 
       {/* 🔵 TABLA */}
       <div className="overflow-x-auto">

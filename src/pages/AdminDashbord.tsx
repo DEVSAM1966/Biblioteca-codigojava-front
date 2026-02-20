@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Users, Book, Building2, UserCog, History, ClipboardList } from "lucide-react";
 import { getCurrentUser } from "../utils/auth.storage";
 import AuthorsSection from "../components/authors/AuthorsSection";
+import PublishersSection from "../components/publishers/PublishersSection";
 
 const AdminDashboard = () => {
   const currentUser = getCurrentUser();
@@ -56,7 +57,7 @@ const AdminDashboard = () => {
       {/* Content Area */}
       <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
         {activeSection === "authors" && <AuthorsSection />}
-        {activeSection === "publishers" && <div>CRUD Publishers aquí</div>}
+        {activeSection === "publishers" && <PublishersSection />}
         {activeSection === "users" && <div>CRUD Users aquí</div>}
         {activeSection === "books" && <div>CRUD Books aquí</div>}
         {activeSection === "loans" && <div>CRUD Loans aquí</div>}

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { getAuthToken } from "../utils/auth.storage";
 
 export interface Author {
@@ -8,86 +9,54 @@ export interface Author {
 const BASE_URL = "http://localhost:9800/authors";
 
 export const authorsService = {
+
   // 🔵 NUEVO: Buscar todos los autores (GET localhost:9800/authors)
   async getAll(): Promise<Author[]> {
-    const res = await fetch(BASE_URL, {
+    const res = await axios.get(`${BASE_URL}`, {
       headers: {
         Authorization: `Bearer ${getAuthToken()}`,
       },
     });
 
-    if (!res.ok) {
-      throw new Error("Error al obtener autores");
-    }
-
-    const json = await res.json();
-    return json.data;
+    return res.data.data;
   },
 
   // 🔵 NUEVO: Crear un autor (POST localhost:9800/authors)
-  async create(nameAuthor: string): Promise<Author> { 
-    const res = await fetch(BASE_URL, { 
-      method: "POST", 
+  async create(author: Author): Promise<Author> { 
+    const res = await axios.post(`${BASE_URL}`, author, { 
       headers: { 
-        "Content-Type": "application/json", 
         Authorization: `Bearer ${getAuthToken()}`, 
       }, 
-      body: JSON.stringify({ nameAuthor }), 
-    }); 
-    
-    if (!res.ok) { throw new Error("Error al crear autor");
-    } 
-    
-    const json = await res.json(); 
-    return json.data; // asumiendo misma estructura { data: { ...author } } 
-    },
+    });  
+    return res.data.data;
+  },
 
     // 🔵 NUEVO: Update un autor (PUT localhost:9800/authors/id/:id)
-    async update(id: number, nameAuthor: string): Promise<Author> {
-      const res = await fetch(`${BASE_URL}/id/${id}`, {
-        method: "PUT",
+    async update(id: number, author: Author): Promise<Author> {
+      const res = await axios.put(`${BASE_URL}/id/${id}`, author, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${getAuthToken()}`,
         },
-        body: JSON.stringify({ nameAuthor }),
       });
-
-      if (!res.ok) {
-        throw new Error("Error al actualizar autor");
-      }
-
-      const json = await res.json();
-      return json.data; // si tu backend envuelve en { data: {...} }
+      return res.data.data;
     },   
     
     // 🔵 NUEVO: Borrar un autor (DELETE localhost:9800/authors/id/:id )
     async remove(id: number): Promise<void> {
-      const res = await fetch(`${BASE_URL}/id/${id}`, {
-        method: "DELETE",
+      await axios.delete(`${BASE_URL}/id/${id}`, {
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       });
-
-      if (!res.ok) {
-        throw new Error("Error al eliminar autor");
-      }
     },
 
     // 🔵 NUEVO: Buscar autores por nombre (GET localhost:9800/authors/name/:name )
     async searchByName(name: string): Promise<Author[]> {
-      const res = await fetch(`${BASE_URL}/name/${encodeURIComponent(name)}`, {
+      const res = await axios.get(`${BASE_URL}/name/${encodeURIComponent(name)}`, {
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       });
-
-      if (!res.ok) {
-        throw new Error("Error al buscar autores");
-      }
-
-      const json = await res.json();
-      return json.data; // si tu backend envuelve en { data: [...] }
+      return res.data.data;
     }
 };
