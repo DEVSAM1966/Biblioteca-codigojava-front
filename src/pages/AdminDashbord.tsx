@@ -3,6 +3,8 @@ import { Users, Book, Building2, UserCog, History, ClipboardList } from "lucide-
 import { getCurrentUser } from "../utils/auth.storage";
 import AuthorsSection from "../components/authors/AuthorsSection";
 import PublishersSection from "../components/publishers/PublishersSection";
+import BooksSection from "../components/books/BooksSection";
+
 
 const AdminDashboard = () => {
   const currentUser = getCurrentUser();
@@ -59,7 +61,7 @@ const AdminDashboard = () => {
         {activeSection === "authors" && <AuthorsSection />}
         {activeSection === "publishers" && <PublishersSection />}
         {activeSection === "users" && <div>CRUD Users aquí</div>}
-        {activeSection === "books" && <div>CRUD Books aquí</div>}
+        {activeSection === "books" && <BooksSection />}
         {activeSection === "loans" && <div>CRUD Loans aquí</div>}
         {activeSection === "history" && <div>CRUD History aquí</div>}
       </div>
