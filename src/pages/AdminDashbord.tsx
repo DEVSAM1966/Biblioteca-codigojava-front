@@ -4,6 +4,7 @@ import { getCurrentUser } from "../utils/auth.storage";
 import AuthorsSection from "../components/authors/AuthorsSection";
 import PublishersSection from "../components/publishers/PublishersSection";
 import BooksSection from "../components/books/BooksSection";
+import LoansSection from "../components/loans/LoansSection";
 
 
 const AdminDashboard = () => {
@@ -62,7 +63,7 @@ const AdminDashboard = () => {
         {activeSection === "publishers" && <PublishersSection />}
         {activeSection === "users" && <div>CRUD Users aquí</div>}
         {activeSection === "books" && <BooksSection />}
-        {activeSection === "loans" && <div>CRUD Loans aquí</div>}
+        {activeSection === "loans" && <LoansSection />}
         {activeSection === "history" && <div>CRUD History aquí</div>}
       </div>
     </div>
