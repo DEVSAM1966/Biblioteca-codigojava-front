@@ -82,4 +82,25 @@ export const loansService = {
       });
       return res.data.data;
     },
+
+    // 🔵 NUEVO: Buscar préstamos por loanId (GET localhost:9800/loans/id/:id)
+    async getByLoanId(loanId: number): Promise<Loan> {
+      const res = await axios.get(`${BASE_URL}/id/${loanId}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      });
+      return res.data.data;
+    },
+
+    // 🔵 NUEVO: Buscar préstamos por loanData (GET localhost:9800/loans/date/:data)
+    async getByLoanData(loanData: string): Promise<Loan[]> {
+      const res = await axios.get(`${BASE_URL}/date/${loanData}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      });
+      return res.data.data;
+    },
+
 };

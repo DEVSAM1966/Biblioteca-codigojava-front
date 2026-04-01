@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Eye, Pencil, Trash2, Plus } from "lucide-react";
-import { loansService, Loan } from "../../services/loans.service";
-import LoanViewModal from "./LoanViewModal";
+import { loansService, Loan, LoanCreateDto } from "../../services/loans.service";
+import LoanViewModal  from "./LoanViewModal";
 import LoanEditModal from "./LoanEditModal";
 import LoanDeleteModal from "./LoanDeleteModal";
+import LoanCreateModal from "./LoanCreateModal";
 
 const LoansSection: React.FC = () => {
 
@@ -16,24 +17,47 @@ const LoansSection: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
     // ============================
-    // 🔵 MODALES (NO FUNCIONAN AÚN)
+    // 🔵 MODALES 
     // ============================
     const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [editLoan, setEditLoan] = useState<Loan | null>(null);
     const [deleteLoan, setDeleteLoan] = useState<Loan | null>(null);
+    const [createLoanModal, setCreateLoanModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
     // ============================
     // 🔵 PAGINACIÓN
     // ============================
+    const [isSearching, setIsSearching] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
-
-    const indexOfLast = currentPage * itemsPerPage;
-    const indexOfFirst = indexOfLast - itemsPerPage;
-    const currentLoans = loans.slice(indexOfFirst, indexOfLast);
-
     const totalPages = Math.ceil(loans.length / itemsPerPage);
+
+    // ⭐ FUNCIONES QUE NECESITA <Pagination /> 
+    const handleNext = () => {
+        setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    };
+
+    const handlePrev = () => {
+        setCurrentPage((prev) => Math.max(prev - 1, 1));
+    };
+
+    //const indexOfLast = currentPage * itemsPerPage;
+    //const indexOfFirst = indexOfLast - itemsPerPage;
+    const currentLoans = isSearching
+    ? loans              // ⭐ en búsqueda NO paginamos
+    : loans.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+
+    // =====================================================
+    // 🔵 RESET AUTOMATICO AL BORRAR EÑ INPUT DE LA BUSQUEDA
+    // =====================================================
+    useEffect(() => {
+        if (searchTerm.trim() === "") {
+            loansService.getAll().then(setLoans);
+        }
+    }, [searchTerm]);
 
     // ============================
     // 🔵 CARGAR PRÉSTAMOS
@@ -89,56 +113,239 @@ const LoansSection: React.FC = () => {
         } catch (err) {
             console.error("Error eliminando préstamo:", err);
             alert("No se pudo eliminar el préstamo.");
-    }
+        }
     };
 
-
     // ============================
-    // 🔵 BÚSQUEDA (NO FUNCIONA AÚN)
+    // 🔵 CREAR PRÉSTAMOS
     // ============================
-    // ❌ Esto no funciona porque no existen searchByName, searchByUser, searchByIsbn
-    // ❌ Lo dejamos comentado hasta implementar búsqueda real
-
-    /*
-    const handleSearch = async () => {
-        const term = search.trim();
-        if (!term) {
-            const all = await loansService.getAll();
-            setLoans(all);
-            return;
-        }
-
+    const handleCreateLoan = async (data: LoanCreateDto) => {
         try {
-            let results: Loan[] = [];
-            results = await loansService.searchByIsbn(term); // ❌ No existe
-            setLoans(results);
-        } catch {
-            setError("Error realizando búsqueda");
+            const newLoan = await loansService.create(data);
+
+            // Insertar el nuevo préstamo en la tabla sin recargar
+            setLoans((prev) => [...prev, newLoan]);
+
+            // Cerrar modal
+            setShowCreateModal(false);
+
+        } catch (error) {
+            console.error("Error creando préstamo:", error);
+            alert("No se pudo crear el préstamo.");
         }
     };
-    */
+
+    // ============================
+    // 🔵 BUSCAR PRÉSTAMOS
+    // ============================
+    const handleSearch = async () => {
+      const term = searchTerm.trim().toLowerCase();
+
+      // Reset si está vacío
+      if (term === "") {
+        const all = await loansService.getAll();
+        setLoans(all);
+        setCurrentPage(1);
+        setIsSearching(false);
+        return;
+      }
+
+      // ============================
+      // 🔵 1) BUSCAR POR PREFIJOS
+      // ============================
+
+      // user:ID
+      if (term.startsWith("user:")) {
+        const id = Number(term.replace("user:", ""));
+        if (!isNaN(id)) {
+            try {
+                const loans = await loansService.getByUserId(id);
+                setLoans(loans);
+                setCurrentPage(1);
+                setIsSearching(true);
+                return;
+            } catch {}
+        }
+      }
+
+      // loan:ID
+      if (term.startsWith("loan:")) {
+        const id = Number(term.replace("loan:", ""));
+        if (!isNaN(id)) {
+            try {
+                const loan = await loansService.getByLoanId(id);
+                setLoans(loan ? [loan] : []);
+                setCurrentPage(1);
+                setIsSearching(true);
+                return;
+            } catch {}
+        }
+      }
+
+      // isbn:XXXX
+      if (term.startsWith("isbn:")) {
+        const isbn = term.replace("isbn:", "");
+        try {
+            const loans = await loansService.getByIsbn(isbn);
+            setLoans(loans);
+            setCurrentPage(1);
+            setIsSearching(true);
+            return;
+        } catch {}
+      }
+
+      // date:YYYY-MM-DD
+      if (term.startsWith("date:")) {
+        const date = term.replace("date:", "");
+        try {
+            const loans = await loansService.getByLoanData(date);
+            setLoans(loans);
+            setCurrentPage(1);
+            setIsSearching(true);
+            return;
+        } catch {}
+      }
+
+      // ============================
+      // 🔵 2) BÚSQUEDA AUTOMÁTICA SIN PREFIJO
+      // ============================
+
+      // ISBN-13
+      if (/^\d{13}$/.test(term)) {
+        try {
+            const loans = await loansService.getByIsbn(term);
+            setLoans(loans);
+            setCurrentPage(1);
+            setIsSearching(true);
+            return;
+        } catch {}
+      }
+
+      // ISBN-10
+      if (/^\d{9}[\dX]$/.test(term)) {
+        try {
+            const loans = await loansService.getByIsbn(term);
+            setLoans(loans);
+            setCurrentPage(1);
+            setIsSearching(true);
+            return;
+        } catch {}
+      }
+
+      // Número → userId primero, luego loanId
+      if (!isNaN(Number(term))) {
+        const num = Number(term);
+
+        // userId
+        try {
+            const userLoans = await loansService.getByUserId(num);
+            if (userLoans.length > 0) {
+                setLoans(userLoans);
+                setCurrentPage(1);
+                setIsSearching(true);
+                return;
+            }
+        } catch {}
+
+        // loanId
+        try {
+            const loan = await loansService.getByLoanId(num);
+            if (loan) {
+                setLoans([loan]);
+                setCurrentPage(1);
+                setIsSearching(true);
+                return;
+            }
+        } catch {}
+      }
+
+      // Fecha YYYY-MM-DD
+      if (/^\d{4}-\d{2}-\d{2}$/.test(term)) {
+        try {
+            const loans = await loansService.getByLoanData(term);
+            setLoans(loans);
+            setCurrentPage(1);
+            setIsSearching(true);
+            return;
+        } catch {}
+      }
+
+      // Último recurso → ISBN textual
+      try {
+        const loans = await loansService.getByIsbn(term);
+        setLoans(loans);
+        setCurrentPage(1);
+        setIsSearching(true);
+        return;
+      } catch {}
+
+      // Sin resultados
+      setLoans([]);
+      setCurrentPage(1);
+      setIsSearching(true);
+    };
+
+
+    // ====================================
+    // 🔵 RESETEO DE PAGINACIÓN EN BUSQUEDAS
+    // ====================================
+    const handleClear = async () => {
+        setSearchTerm("");
+        const all = await loansService.getAll();
+        setLoans(all);
+        setCurrentPage(1);      // ⭐ reset
+        setIsSearching(false);  // ⭐ modo normal
+    };
+
+
 
     return (
         <div className="space-y-4">
 
             {/* ============================
                 🔵 HEADER
-            ============================ */}
+                ============================ */}
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-semibold">Gestión de Préstamos</h2>
 
                 <div className="flex items-center gap-3">
 
-                    {/* 🔵 Input de búsqueda (NO FUNCIONAL AÚN) */}
+                    {/* ============================
+                        🔵 Input de búsqueda
+                        ============================ */}
+                    <button
+                        className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800"
+                        onClick={handleSearch}
+                        >
+                        Buscar
+                    </button>
+
+                    {/* ============================
+                        🔵 Input de limpieza busqueda
+                        ============================ */}
+                    <button
+                        className="bg-gray-300 text-black px-3 py-2 rounded hover:bg-gray-400"
+                        onClick={handleClear}
+                        >
+                        Limpiar
+                    </button>
+
                     <input
                         type="text"
-                        placeholder="Buscar préstamos..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Buscar..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                handleSearch();
+                            }
+                        }}
                         className="px-3 py-2 border rounded-lg w-64 focus:ring-2 focus:ring-blue-500 outline-none"
                     />
 
-                    {/* 🔵 Botón crear préstamo (modal no implementado) */}
+                    {/* ============================
+                        🔵 Botón crear préstamo  
+                        ============================    */}
                     <button
                         className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
                         onClick={() => setShowCreateModal(true)}
@@ -151,7 +358,7 @@ const LoansSection: React.FC = () => {
 
             {/* ============================
                 🔵 MENSAJE DE ERROR
-            ============================ */}
+                ============================ */}
             {error && (
                 <div className="mt-4 p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
                     <p className="text-red-800 font-medium">{error}</p>
@@ -172,7 +379,7 @@ const LoansSection: React.FC = () => {
 
             {/* ============================
                 🔵 TABLA DE PRÉSTAMOS
-            ============================ */}
+                ============================ */}
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
                     <thead>
@@ -249,45 +456,54 @@ const LoansSection: React.FC = () => {
                 </table>
             </div>
 
-            {/* ============================
-                🔵 PAGINACION
-            ============================ */}
-            <div className="flex justify-end items-center mt-4 gap-4">
-
-            <button
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage(currentPage - 1)}
-                className={`px-4 py-2 rounded-lg border ${
-                currentPage === 1
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-white hover:bg-gray-100"
-                }`}
-                >
-                Anterior
-            </button>
-
-            <span className="text-sm text-gray-700">
-                Página {currentPage} de {totalPages}
-            </span>
-
-            <button
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(currentPage + 1)}
-                className={`px-4 py-2 rounded-lg border ${
-                currentPage === totalPages
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-white hover:bg-gray-100"
-                }`}
-                >
-                Siguiente
-            </button>
-
-            </div>
+            {/* Mensaje cuando no hay resultados en la busqueda */}
+            {loans.length === 0 && (
+                <p className="text-center text-gray-500 mt-4">
+                  No se encontraron resultados.
+                </p>
+            )}
 
 
             {/* ============================
-                🔵 MODALES (NO IMPLEMENTADOS)
-            ============================ */}
+                🔵 PAGINACION (solo si NO estamos buscando)
+                ============================ */}
+            {!isSearching && (
+                <div className="flex justify-end items-center mt-4 gap-4">
+
+                    <button
+                     disabled={currentPage === 1}
+                     onClick={() => setCurrentPage(currentPage - 1)}
+                     className={`px-4 py-2 rounded-lg border ${
+                        currentPage === 1
+                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-white hover:bg-gray-100"
+                      }`}
+                    >
+                        Anterior
+                    </button>
+
+                    <span className="text-sm text-gray-700">
+                        Página {currentPage} de {totalPages}
+                    </span>
+
+                    <button
+                     disabled={currentPage === totalPages}
+                     onClick={() => setCurrentPage(currentPage + 1)}
+                     className={`px-4 py-2 rounded-lg border ${
+                     currentPage === totalPages
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-white hover:bg-gray-100"
+                     }`}
+                    >
+                        Siguiente
+                    </button>
+
+                </div>
+            )}
+
+            {/* ============================
+                🔵 MODALES (IMPLEMENTADOS)
+                ============================ */}
  
             {selectedLoan && (
                 <LoanViewModal
@@ -312,12 +528,13 @@ const LoansSection: React.FC = () => {
                 />
             )}
 
-            {/*
+            
             {showCreateModal && (
-                <LoanCreateModal onClose={() => setShowCreateModal(false)} onCreate={handleCreateLoan} />
+                <LoanCreateModal 
+                    onClose={() => setShowCreateModal(false)} 
+                    onCreate={handleCreateLoan} />
             )}
 
-            */}
 
         </div>
     );
