@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { usersService, User } from "../../services/users.service";
+import { getCurrentUser } from "../../utils/auth.storage";
 
 interface Props {
   userId: number;
@@ -15,6 +16,11 @@ const EditUserModal: React.FC<Props> = ({ userId, onClose, onUpdated }) => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // 🔵 NUEVO — Usuario autenticado
+  const currentUser = getCurrentUser();
+  const isSupport = currentUser?.role === "SUPPORT";
+  const isEditingSelf = currentUser?.userId === userId;
 
   // Estados editables
   const [fullname, setFullname] = useState("");
@@ -135,7 +141,15 @@ const EditUserModal: React.FC<Props> = ({ userId, onClose, onUpdated }) => {
 
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="border px-3 py-2 rounded" placeholder="Correo electrónico" />
 
-          <select value={role} onChange={(e) => setRole(e.target.value)} className="border px-3 py-2 rounded">
+          <select 
+            value={role} 
+            onChange={(e) => setRole(e.target.value)} 
+            className="border px-3 py-2 rounded"
+            disabled={
+              (isSupport && isEditingSelf) ||
+              (isSupport && userData.role === "ADMIN")
+            }
+          >
             <option value="USER">USER</option>
             <option value="ADMIN">ADMIN</option>
             <option value="SUPPORT">SUPPORT</option>

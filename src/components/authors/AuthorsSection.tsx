@@ -8,7 +8,7 @@ import AuthorCreateModal from "./AuthorCreateModal";
 import AuthorEditModal from "./AuthorEditModal";
 import AuthorDeleteModal from "./AuthorDeleteModal";
 import { authorsService } from "../../services/authors.service";
-
+import { getCurrentUser } from "../../utils/auth.storage";
 
 interface Author {
   authorId: number;
@@ -49,6 +49,10 @@ const AuthorsSection: React.FC = () => {
   const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
   const [editAuthor, setEditAuthor] = useState<Author | null>(null);
   const [deleteAuthor, setDeleteAuthor] = useState<Author | null>(null);
+
+  // Rol del usuario autenticado
+    const currentUser = getCurrentUser();
+    const isSupport = currentUser?.role === "SUPPORT";
 
   // 🔵 Cargar autores reales desde backend
   useEffect(() => {
@@ -261,8 +265,14 @@ const AuthorsSection: React.FC = () => {
 
                     {/* 🔵 Borrar */}
                     <button
-                      className="text-red-600 hover:text-red-800"
-                      onClick={() => setDeleteAuthor(author)}
+                      
+                      onClick={() => !isSupport && setDeleteAuthor(author)}
+                      disabled={isSupport}
+                      className={`mr-2 ${
+                        isSupport
+                          ? "text-red-400 cursor-not-allowed"
+                          : "text-red-600 hover:text-red-800"
+                    }`}
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>

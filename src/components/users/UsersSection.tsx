@@ -6,6 +6,7 @@ import DropUserModal from "./DropUserModal";
 import DeleteUserModal from "./DeleteUserModal";
 import CreateUserModal from "./CreateUserModal";
 import EditUserModal from "./EditUserModal";
+import { getCurrentUser } from "../../utils/auth.storage";
 
 const UsersSection: React.FC = () => {
   // 1. Estados principales
@@ -19,6 +20,10 @@ const UsersSection: React.FC = () => {
   const [viewUserId, setViewUserId] = useState<number | null>(null);
   const [deleteUser, setDeleteUser] = useState<User | null>(null);
   const [dropUser, setDropUser] = useState<User | null>(null);
+
+  // Rol del usuario autenticado
+  const currentUser = getCurrentUser();
+  const isSupport = currentUser?.role === "SUPPORT";
 
   // Estados para ordenación especiales por rol y fecha creación
   const [sortField, setSortField] = useState<"registrationDate" | "fullname" | null>(null);
@@ -142,8 +147,20 @@ const UsersSection: React.FC = () => {
             return;
         }
 
-        const user = await usersService.getByName(term);
-        setUsers(user ? [user] : []);
+        const result = await usersService.getByName(term);
+        if (Array.isArray(result)) {
+          setUsers(result);
+          setCurrentPage(1);
+          return;
+        }
+
+        if (result) {
+          setUsers([result]);
+          setCurrentPage(1);
+          return;
+        }
+
+        setUsers([]);
         setCurrentPage(1);
 
     } catch {
@@ -261,8 +278,13 @@ return (
                   <Pencil className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => setDeleteUser(user)}
-                  className="text-red-600 hover:text-red-800 mr-2"
+                  onClick={() => !isSupport && setDeleteUser(user)}
+                  disabled={isSupport}
+                  className={`mr-2 ${
+                      isSupport
+                        ? "text-red-400 cursor-not-allowed"
+                        : "text-red-600 hover:text-red-800"
+                    }`}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

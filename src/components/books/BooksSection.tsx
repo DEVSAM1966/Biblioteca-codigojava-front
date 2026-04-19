@@ -7,6 +7,7 @@ import BookEditModal from "./BookEditModal";
 import BookViewModal from "./BookViewModal";
 import BookFilesModal from "./BookFilesModal";
 import BookDeleteModal from "./BookDeleteModal";
+import { getCurrentUser } from "../../utils/auth.storage";
 
 const BooksSection: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -19,6 +20,10 @@ const BooksSection: React.FC = () => {
   const [viewBook, setViewBook] = useState<Book | null>(null);
   const [filesBook, setFilesBook] = useState<Book | null>(null);
   const [deleteBook, setDeleteBook] = useState<Book | null>(null);
+
+  // Rol del usuario autenticado
+  const currentUser = getCurrentUser();
+  const isSupport = currentUser?.role === "SUPPORT";
 
   // Paginación frontend
   const [currentPage, setCurrentPage] = useState(1);
@@ -191,10 +196,17 @@ const BooksSection: React.FC = () => {
                     onClick={() => setFilesBook(b)}
                   />
 
-                  <Trash2
-                    className="h-5 w-5 text-red-600 cursor-pointer"
-                    onClick={() => setDeleteBook(b)}
-                  />
+                  <button
+                    onClick={() => !isSupport && setDeleteBook(b)}
+                    disabled={isSupport}
+                    className={`mr-2 ${
+                      isSupport
+                        ? "text-red-400 cursor-not-allowed"
+                        : "text-red-600 hover:text-red-800"
+                    }`}
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
 
                 </td>
               </tr>

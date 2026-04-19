@@ -8,6 +8,7 @@ import PublisherEditModal from "./PublisherEditModal";
 import PublisherDeleteModal from "./PublisherDeleteModal";
 import PublisherCreateModal from "./PublisherCreateModal";
 import { publishersService } from "../../services/publishers.service";
+import { getCurrentUser } from "../../utils/auth.storage";
 
 export interface Publisher {
     publisherId: number;
@@ -67,6 +68,10 @@ const PublishersSection: React.FC = () => {
     const [editPublisher, setEditPublisher] = useState<Publisher | null>(null);
     const [deletePublisher, setDeletePublisher] = useState<Publisher | null>(null);
     
+    // Rol del usuario autenticado
+    const currentUser = getCurrentUser();
+    const isSupport = currentUser?.role === "SUPPORT";
+
     // 🔵 Cargar editoress reales desde backend
     useEffect(() => {
         const loadPublishers = async () => {
@@ -257,8 +262,15 @@ const PublishersSection: React.FC = () => {
                                     </button>
 
                                     <button
-                                        className="text-red-600 hover:text-red-800"
-                                        onClick={() => setDeletePublisher(publisher)}
+                                        
+                                        onClick={() => !isSupport && setDeletePublisher(publisher)}
+                                        disabled={isSupport}    
+                                        className={`mr-2 ${
+                                            isSupport 
+                                            ? "text-red-400 cursor-not-allowed" 
+                                            : "text-red-600 hover:text-red-800"
+                                        }`}
+
                                     >
                                         <Trash2 className="h-4 w-4" />
                                     </button>
