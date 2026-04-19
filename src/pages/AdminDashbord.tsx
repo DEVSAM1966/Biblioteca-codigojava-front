@@ -5,6 +5,7 @@ import AuthorsSection from "../components/authors/AuthorsSection";
 import PublishersSection from "../components/publishers/PublishersSection";
 import BooksSection from "../components/books/BooksSection";
 import LoansSection from "../components/loans/LoansSection";
+import UsersSection from "../components/users/UsersSection";
 
 
 const AdminDashboard = () => {
@@ -61,7 +62,7 @@ const AdminDashboard = () => {
       <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
         {activeSection === "authors" && <AuthorsSection />}
         {activeSection === "publishers" && <PublishersSection />}
-        {activeSection === "users" && <div>CRUD Users aquí</div>}
+        {activeSection === "users" && <UsersSection />}
         {activeSection === "books" && <BooksSection />}
         {activeSection === "loans" && <LoansSection />}
         {activeSection === "history" && <div>CRUD History aquí</div>}

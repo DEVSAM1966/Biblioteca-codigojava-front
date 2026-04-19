@@ -5,6 +5,7 @@ import LoanViewModal  from "./LoanViewModal";
 import LoanEditModal from "./LoanEditModal";
 import LoanDeleteModal from "./LoanDeleteModal";
 import LoanCreateModal from "./LoanCreateModal";
+import { getCurrentUser } from "../../utils/auth.storage";
 
 const LoansSection: React.FC = () => {
 
@@ -25,6 +26,10 @@ const LoansSection: React.FC = () => {
     const [deleteLoan, setDeleteLoan] = useState<Loan | null>(null);
     const [createLoanModal, setCreateLoanModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+
+    // Rol del usuario autenticado
+    const currentUser = getCurrentUser();
+    const isSupport = currentUser?.role === "SUPPORT";
 
     // ============================
     // 🔵 PAGINACIÓN
@@ -433,8 +438,13 @@ const LoansSection: React.FC = () => {
                                         </button>
 
                                         <button
-                                            className="text-red-600 hover:text-red-800"
-                                            onClick={() => setDeleteLoan(loan)}
+                                            onClick={() => !isSupport && setDeleteLoan(loan)}
+                                            disabled={isSupport}
+                                            className={`mr-2 ${
+                                                isSupport
+                                                    ? "text-red-400 cursor-not-allowed"
+                                                    : "text-red-600 hover:text-red-800"
+                                            }`}
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </button>
