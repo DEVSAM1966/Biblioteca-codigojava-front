@@ -1,134 +1,137 @@
-# 📚 Library Management System
+# 📚 Sistema de gestión de bibliotecas / librerias.
 
-A modern, full-featured library management system built with React, Firebase, and Tailwind CSS.
+Proyecto de fronted creado en base al trabajo realizado por el **Sr. Harsh Rathod** donde creo un sistema de gestión moderno de biblioteca online bajo React, Firebase y Tailwind CSS.  Para mas información ver su repositorio: https://github.com/panduthegang
 
-## ✨ Features
+En nuestra modificación del proyecto original se ha sustituido por completo el uso del firebase por un backend bajo NodeJS que la mantiene la persistencia de datos con una BD MySQL (esta en un contenedor Docker la BD). 
+Para más detalle consulte el repositorio: https://github.com/DEVSAM1966/Biblioteca-code-cafe.git
 
-🔐 **Authentication & Authorization**
-- Secure email/password authentication
-- Role-based access control (Admin/User)
-- Protected routes and API endpoints
+Se esta realizando una versión de backend con Spring Boot y BD MySQL en contenedor Docker (pendiente de integrarlo )
 
-📖 **Book Management**
-- Comprehensive book catalog
-- Real-time availability tracking
-- ISBN-based book information
-- Book quantity management
+React y Tailwind CSS sigue siendo usado pero modificando parte del proyecto original para abergar las necesidades de proyecto.
 
-👥 **User Features**
-- Book borrowing and returns
-- Due date tracking
-- Reading history
-- Personal dashboard
+Aqui quiero mostrar mi apoyo y respecto al Sr. Harsh Rathod.
 
-⚡ **Admin Features**
-- Book inventory management
-- User activity monitoring
-- Borrowing analytics
-- Real-time statistics
+## ✨ Caracterias.
 
-🎨 **Modern UI/UX**
-- Responsive design
-- Beautiful animations
-- Intuitive interface
-- Dark mode support
+🔐 **Autenticacion & Autorizacion**
+- Autenticación segura por Correo electrónico / Contraseña.
+- Control de acceso bajo Roles (ADMIN / SUPPORT / USER).
+- Protección de rutas y API endpoints.
 
-## 🛠️ Tech Stack
+📖 **Administración de Libros**
+- Catalogo de libros completo.
+- Seguimiento de disponibilidad en tiempo real.
+- Información del libro basada en ISBN
+- Gestión de la cantidad de libros.
 
-- ⚛️ React 18 with TypeScript
-- 🔥 Firebase Authentication & Firestore
-- 🎨 Tailwind CSS for styling
-- 🎭 Framer Motion for animations
-- 📦 Vite for blazing fast builds
-- 🔍 Real-time search functionality
+👥 **Funciones del usuario**
+- Préstamo y devolución de libros.
+- Seguimiento de la fecha de vencimiento.
+- Panel personal.
 
-## 🚀 Getting Started
+⚡ **Funciones de administrador**
+- Gestión de autores, editores y categorias.
+- Gestión del inventario de libros con subida de libros y portadas al backend.
+- Administración de los prestamos y usuarios.
 
-1. **Clone the repository**
+🎨 **Moderno UI/UX**
+- Diseño responsivo.
+- Bellas animaciones.
+- Interfaces intuitivas.
+- Soporte al modo Oscuro.
+
+## 🛠️ Tecnológia aplicada.
+
+- ⚛️ React 18 con TypeScript.
+- 🔥 Conexión a un Backend implementado a medida para bibliotecas online en NodeJs y BD MySQL en un contenedor Docker.
+- 🎨 Tailwind CSS para estilos.
+- 🎭 Framer Motion para animaciones.
+- 📦 Vite para compilaciones extremadamente rápidas.
+- 🔍 Funcionalidad de búsqueda en tiempo real.
+
+## 🚀 Arranque del proyecto.
+
+1. **Clonar el repositorio en local**
 ```bash
-git clone https://github.com/yourusername/library-management-system.git
-cd library-management-system
+git clone https://github.com/DEVSAM1966/Biblioteca-codigojava-front.git
+cd Biblioteca-codigojava-front
 ```
-
-2. **Install dependencies**
+2. **Instalar dependencias**
 ```bash
 npm install
 ```
-
-3. **Set up environment variables**
-Create a `.env` file in the root directory with your Firebase configuration:
-```env
-VITE_FIREBASE_API_KEY=your_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+3. **Instalar del backend en NodeJS en local**
+```bash
+git clone https://github.com/DEVSAM1966/Biblioteca-code-cafe.git
 ```
 
-4. **Create Firestore Indexes**
+ATENCIÓN.  Se debe seguir las recomendaciones del README.md del proyecto para que la parte backend funcione sin problemas.
 
-The following composite indexes are required for optimal performance:
+De base no hay ningun fichero PDF (libro) ni JPG (portada) para que el tamaño no de problemas en el repositorio de GitHub.  Se debera dar de alta libros y subir los ficheros siguiendo las normas del backend via Postman o bien desde el frontend en el panel de administrador.
 
-**Collection: borrowRecords**
-```
-Indexes:
-1. Active Borrows Query
-   - Fields:
-     - userId (ASCENDING)
-     - returnDate (ASCENDING)
-
-2. Book Availability Query
-   - Fields:
-     - bookId (ASCENDING)
-     - returnDate (ASCENDING)
-
-3. All Borrows Query
-   - Fields:
-     - borrowDate (DESCENDING)
-     - returnDate (ASCENDING)
-
-4. User Borrows Query
-   - Fields:
-     - userId (ASCENDING)
-     - borrowDate (DESCENDING)
+4. **Inicia el servidor Backend de desarrollo**
+Para usuarios de Linux.
+```bash
+sudo systemctl start docker
 ```
 
-5. **Start the development server**
+Para usuarios de Windows.
+- Arrancar el programa Docker Desktop.
+- Seleccionar el contenedor que contenga la BD del proyecto y pulsar el botón Start (si no arranco automaticamente).  El nombre del contenedor es:  **biblio_mysql**
+
+A continuación.
 ```bash
 npm run dev
 ```
 
-## 📱 Screenshots
+5. **Inicia el servidor Frontend de desarrollo**
+```bash
+npm run dev
+```
 
-### Admin Dashboard
-![Admin Dashboard](./public/Admin.png)
+## 📱 Capturas de pantalla.
 
-### User Interface
-![User Interface](./public/User.png)
+### Login.
+![Pantalla de login](./public/Login.png)
 
-## 🔒 Security
+### Registro de un usuario por si mismo.
+![Pantalla de registro](./public/Register-user.png)
 
-- Row-level security in Firestore
-- Protected API endpoints
-- Secure authentication flow
-- Input validation and sanitization
+### Interfaz de usuario.
+![Interface de usuario](./public/User-code-cafe.png)
 
-## 🔄 State Management
+### Panel de administración - autores.
+![Pantalla administración - autores](./public/Admin-authors.png)
 
-- React Context for global state
-- Local state with useState
-- Real-time updates with Firebase listeners
-- Optimistic UI updates
+### Panel de administración - editores.
+![Pantalla admnistración - editores](./public/Admin-publishers.png)
 
-## 🎯 Future Improvements
+### Panel de administración - categorias.
+![Pantalla admnistración - categorias](./public/Admin-categories.png)
 
-🔮 **Planned Features**
-- Email notifications for due dates
-- Book recommendations
-- Social sharing
-- Advanced search filters
-- Mobile app version
+### Panel de administración - libros.
+![Pantalla admnistración - libros](./public/Admin-books.png)
 
-<div align="center">Made with ❤️ Harsh Rathod</div>
+### Panel de administración - prestamos.
+![Pantalla admnistración - prestamos](./public/Admin-loans.png)
+
+## 🔒 Seguridad
+
+- Verificación del rol asignado al usuario y de su existencia en BD.
+- Acceso por Token JWT (limitado su vida util en 1 hora).
+- Limitaciones del uso segun el rol que tenga.
+- USER.  Acceso al panel de usuario.
+- SUPPORT. Acceso a los paneles de usuario, administración.  No podrá borrar registros de la BD ni autopromocionarse como ADMIN.
+- ADMIN. Acceso a los paneñes de usuario, administracion.  Puede borrar registros.
+
+
+
+# Autor.
+
+**Sebastián Asunción**
+
+---
+
+
+<div align="center">Thanks for ❤️ Harsh Rathod</div>
+
