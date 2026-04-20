@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Users, Book, Building2, UserCog, History, ClipboardList } from "lucide-react";
+import { Users, Book, Building2, UserCog, History, ClipboardList, LucideBookUp2 } from "lucide-react";
 import { getCurrentUser } from "../utils/auth.storage";
 import AuthorsSection from "../components/authors/AuthorsSection";
 import PublishersSection from "../components/publishers/PublishersSection";
 import BooksSection from "../components/books/BooksSection";
 import LoansSection from "../components/loans/LoansSection";
 import UsersSection from "../components/users/UsersSection";
+import CategoriesSection from "../components/categories/CategoriesSection";
 
 
 const AdminDashboard = () => {
@@ -17,8 +18,9 @@ const AdminDashboard = () => {
   const sections = [
     { id: "authors", label: "Authors", icon: Users },
     { id: "publishers", label: "Publishers", icon: Building2 },
-    { id: "users", label: "Users", icon: UserCog },
+    { id: "categories", label: "Categories", icon: LucideBookUp2 },
     { id: "books", label: "Books", icon: Book },
+    { id: "users", label: "Users", icon: UserCog },
     { id: "loans", label: "Loans", icon: ClipboardList },
     { id: "history", label: "History", icon: History },
   ];
@@ -65,6 +67,7 @@ const AdminDashboard = () => {
         {activeSection === "users" && <UsersSection />}
         {activeSection === "books" && <BooksSection />}
         {activeSection === "loans" && <LoansSection />}
+        {activeSection === "categories" && <CategoriesSection />}
         {activeSection === "history" && <div>CRUD History aquí</div>}
       </div>
     </div>
