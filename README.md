@@ -1,90 +1,464 @@
-# 📚 Sistema de gestión de bibliotecas / librerias.
+# 📚 Sistema de Gestión de Bibliotecas / Librerías.
 
-Proyecto de fronted creado en base al trabajo realizado por el **Sr. Harsh Rathod** donde creo un sistema de gestión moderno de biblioteca online bajo React, Firebase y Tailwind CSS.  Para mas información ver su repositorio: https://github.com/panduthegang
+<div align="center">
 
-En nuestra modificación del proyecto original se ha sustituido por completo el uso del firebase por un backend bajo NodeJS que la mantiene la persistencia de datos con una BD MySQL (esta en un contenedor Docker la BD). 
-Para más detalle consulte el repositorio: https://github.com/DEVSAM1966/Biblioteca-code-cafe.git
+https://img.shields.io/badge/status-active-brightgreen
+https://img.shields.io/badge/frontend-React%2018-blue
+https://img.shields.io/badge/backend-Node.js%20%2B%20Express-green
+https://img.shields.io/badge/database-MySQL-orange
+https://img.shields.io/badge/license-MIT-lightgrey
 
-Se esta realizando una versión de backend con Spring Boot y BD MySQL en contenedor Docker (pendiente de integrarlo )
+</div>
 
-React y Tailwind CSS sigue siendo usado pero modificando parte del proyecto original para abergar las necesidades de proyecto.
+Proyecto basado en el trabajo original del Sr. Harsh Rathod, quien desarrolló un sistema moderno de biblioteca online con React, Firebase y Tailwind CSS.
+Repositorio original: https://github.com/panduthegang
 
-Aqui quiero mostrar mi apoyo y respecto al Sr. Harsh Rathod.
+Esta versión reemplaza completamente Firebase por un backend propio en Node.js, con persistencia en MySQL dentro de Docker, ampliando funcionalidades, seguridad y arquitectura.
 
-## ✨ Caracterias.
+    Mi respeto y agradecimiento al Sr. Harsh Rathod por su trabajo original.
 
-🔐 **Autenticacion & Autorizacion**
-- Autenticación segura por Correo electrónico / Contraseña.
-- Control de acceso bajo Roles (ADMIN / SUPPORT / USER).
-- Protección de rutas y API endpoints.
+## 📑 Tabla de Contenidos.
 
-📖 **Administración de Libros**
-- Catalogo de libros completo.
-- Seguimiento de disponibilidad en tiempo real.
-- Información del libro basada en ISBN
-- Gestión de la cantidad de libros.
+  -  ✨ Características
 
-👥 **Funciones del usuario**
+  -  🏗️ Arquitectura del Sistema
+
+  -  🔒 Seguridad
+
+  -  🧩 Módulos Implementados
+
+  -  🛠️ Tecnologías
+
+  -  📂 Estructura del Proyecto
+
+  -  🔐 Flujo de Autenticación
+
+  -  🚀 Instalación y Ejecución
+
+  -  📱 Capturas
+
+  -  🗺️ Roadmap
+
+  -  🤝 Contribución
+
+  -  📄 Licencia
+
+  -  👨‍💻 Autor
+
+
+## ✨ Características principales.
+
+🔐 **Autenticación & Autorización.**
+
+- Login seguro mediante correo y contraseña.
+
+- Acceso protegido mediante JWT con expiración de 1 hora.
+
+- Control de acceso basado en roles: ADMIN, SUPPORT, USER.
+
+- Protección de rutas en frontend y backend.
+
+- Validación estricta del token y del rol en cada endpoint.
+
+📖 **Gestión de Libros.**
+
+- Catálogo completo con portadas e información basada en ISBN.
+
+- Control de disponibilidad en tiempo real.
+
+- Subida de archivos PDF y portadas JPG al backend.
+
+- Gestión de inventario.
+
+👥 **Funciones del usuario.**
+
 - Préstamo y devolución de libros.
+
 - Seguimiento de la fecha de vencimiento.
+
 - Panel personal.
 
-⚡ **Funciones de administrador**
-- Gestión de autores, editores y categorias.
-- Gestión del inventario de libros con subida de libros y portadas al backend.
-- Administración de los prestamos y usuarios.
+⚡ **Funciones de Administrador.**
 
-🎨 **Moderno UI/UX**
+- Gestión de autores, editores, categorías y usuarios.
+
+- Administración de préstamos.
+
+- Control total del inventario.
+
+🎨 **UI/UX Moderna.**
+
 - Diseño responsivo.
-- Bellas animaciones.
-- Interfaces intuitivas.
-- Soporte al modo Oscuro.
 
-## 🛠️ Tecnológia aplicada.
+- Animaciones suaves con Framer Motion.
 
-- ⚛️ React 18 con TypeScript.
-- 🔥 Conexión a un Backend implementado a medida para bibliotecas online en NodeJs y BD MySQL en un contenedor Docker.
-- 🎨 Tailwind CSS para estilos.
-- 🎭 Framer Motion para animaciones.
-- 📦 Vite para compilaciones extremadamente rápidas.
-- 🔍 Funcionalidad de búsqueda en tiempo real.
+- Modo oscuro.
 
-## 🚀 Arranque del proyecto.
+- Interfaz clara e intuitiva.
 
-1. **Clonar el repositorio en local**
+
+## 🏗️ Arquitectura del Sistema.
+
+graph TD
+    %% Arquitectura general del sistema
+
+    subgraph Frontend
+    A[React + TS + Vite<br/>Tailwind CSS<br/>Axios<br/>React Router]
+    end
+
+    subgraph Backend
+    B[Node.js + Express<br/>Prisma ORM<br/>Middlewares de seguridad<br/>Validación de roles]
+    end
+
+    subgraph Database
+    C[(MySQL - Docker)]
+    end
+
+    A -- "HTTP/REST + JWT" --> B
+    B -- "SQL" --> C
+    
+    style A fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
+    style B fill:#3C873A,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#00758F,stroke:#333,stroke-width:2px,color:#fff
+
+
+## 🧬 Diagrama UML (Modelo de Dominio).
+
+@startuml
+
+class User {
+  + userId: number
+  + name: string
+  + email: string
+  + passwordHash: string
+  + role: UserRole
+}
+
+enum UserRole {
+  ADMIN
+  SUPPORT
+  USER
+}
+
+class Book {
+  + bookId: number
+  + title: string
+  + isbn: string
+  + description: string
+  + coverPath: string
+  + filePath: string
+  + availableCopies: number
+}
+
+class Author {
+  + authorId: number
+  + name: string
+  + bio: string
+}
+
+class Publisher {
+  + publisherId: number
+  + name: string
+  + country: string
+}
+
+class Category {
+  + categoryId: number
+  + nameCategory: string
+  + subtopicCategory: string
+}
+
+class Loan {
+  + loanId: number
+  + startDate: Date
+  + dueDate: Date
+  + returnDate: Date
+  + status: LoanStatus
+}
+
+enum LoanStatus {
+  ACTIVE
+  RETURNED
+  LATE
+}
+
+User "1" -- "0..*" Loan : has
+Book "1" -- "0..*" Loan : is loaned in
+Book "1" -- "0..*" Author : written by
+Book "1" -- "0..*" Category : categorized as
+Book "1" -- "1" Publisher : published by
+
+@enduml
+
+
+## 🌐 Mapa de Endpoints (REST API).
+/auth
+ ├─ POST /login
+ └─ POST /register
+
+/users
+ ├─ GET    /users
+ ├─ GET    /users/id/{id}
+ ├─ POST   /users
+ ├─ PUT    /users/id/{id}
+ └─ DELETE /users/id/{id}
+
+/books
+ ├─ GET    /books
+ ├─ GET    /books/id/{id}
+ ├─ GET    /books/isbn/{isbn}
+ ├─ POST   /books
+ ├─ PUT    /books/id/{id}
+ └─ DELETE /books/id/{id}
+
+/authors
+ ├─ GET    /authors
+ ├─ GET    /authors/id/{id}
+ ├─ POST   /authors
+ ├─ PUT    /authors/id/{id}
+ └─ DELETE /authors/id/{id}
+
+/publishers
+ ├─ GET    /publishers
+ ├─ GET    /publishers/id/{id}
+ ├─ POST   /publishers
+ ├─ PUT    /publishers/id/{id}
+ └─ DELETE /publishers/id/{id}
+
+/categories
+ ├─ GET    /categories
+ ├─ GET    /categories/id/{id}
+ ├─ GET    /categories/name/{name}
+ ├─ POST   /categories
+ ├─ PUT    /categories/id/{id}
+ └─ DELETE /categories/id/{id}
+
+/loans
+ ├─ GET    /loans
+ ├─ GET    /loans/id/{id}
+ ├─ GET    /loans/user/{userId}
+ ├─ POST   /loans
+ ├─ PUT    /loans/id/{id}
+ └─ PUT    /loans/id/{id}/return
+
+
+## 📘 Tabla de Endpoints.
+
+| Recurso      | Método | Endpoint                         | Descripción                               | Roles permitidos        |
+|--------------|--------|-----------------------------------|-------------------------------------------|--------------------------|
+| **Auth**     | POST   | `/auth/login`                    | Login, devuelve JWT                       | Público                  |
+| **Auth**     | POST   | `/auth/register`                 | Registro de usuario                       | Público / ADMIN          |
+| **Users**    | GET    | `/users`                         | Listar usuarios                           | ADMIN, SUPPORT           |
+| **Users**    | GET    | `/users/id/{id}`                 | Detalle de usuario                        | ADMIN, SUPPORT           |
+| **Users**    | POST   | `/users`                         | Crear usuario                             | ADMIN                    |
+| **Users**    | PUT    | `/users/id/{id}`                 | Actualizar usuario                        | ADMIN, SUPPORT (limit.)  |
+| **Users**    | DELETE | `/users/id/{id}`                 | Borrar usuario                            | ADMIN                    |
+| **Books**    | GET    | `/books`                         | Listar libros                             | Todos (con token)        |
+| **Books**    | GET    | `/books/id/{id}`                 | Detalle de libro                          | Todos                    |
+| **Books**    | GET    | `/books/isbn/{isbn}`             | Buscar por ISBN                           | Todos                    |
+| **Books**    | POST   | `/books`                         | Crear libro                               | ADMIN, SUPPORT           |
+| **Books**    | PUT    | `/books/id/{id}`                 | Actualizar libro                          | ADMIN, SUPPORT           |
+| **Books**    | DELETE | `/books/id/{id}`                 | Borrar libro                              | ADMIN                    |
+| **Authors**  | GET    | `/authors`                       | Listar autores                            | ADMIN, SUPPORT           |
+| **Authors**  | GET    | `/authors/id/{id}`               | Detalle de autor                          | ADMIN, SUPPORT           |
+| **Authors**  | POST   | `/authors`                       | Crear autor                               | ADMIN, SUPPORT           |
+| **Authors**  | PUT    | `/authors/id/{id}`               | Actualizar autor                          | ADMIN, SUPPORT           |
+| **Authors**  | DELETE | `/authors/id/{id}`               | Borrar autor                              | ADMIN                    |
+| **Publishers** | GET  | `/publishers`                    | Listar editores                           | ADMIN, SUPPORT           |
+| **Publishers** | GET  | `/publishers/id/{id}`            | Detalle de editor                         | ADMIN, SUPPORT           |
+| **Publishers** | POST | `/publishers`                    | Crear editor                              | ADMIN, SUPPORT           |
+| **Publishers** | PUT  | `/publishers/id/{id}`            | Actualizar editor                         | ADMIN, SUPPORT           |
+| **Publishers** | DELETE | `/publishers/id/{id}`          | Borrar editor                             | ADMIN                    |
+| **Categories** | GET  | `/categories`                    | Listar categorías                         | ADMIN, SUPPORT           |
+| **Categories** | GET  | `/categories/id/{id}`            | Detalle de categoría                      | ADMIN, SUPPORT           |
+| **Categories** | GET  | `/categories/name/{name}`        | Buscar por nombre                         | ADMIN, SUPPORT           |
+| **Categories** | POST | `/categories`                    | Crear categoría                           | ADMIN, SUPPORT           |
+| **Categories** | PUT  | `/categories/id/{id}`            | Actualizar categoría                      | ADMIN, SUPPORT           |
+| **Categories** | DELETE | `/categories/id/{id}`          | Borrar categoría                          | ADMIN                    |
+| **Loans**     | GET   | `/loans`                         | Listar préstamos                          | ADMIN, SUPPORT           |
+| **Loans**     | GET   | `/loans/id/{id}`                 | Detalle de préstamo                       | ADMIN, SUPPORT           |
+| **Loans**     | GET   | `/loans/user/{userId}`           | Préstamos de un usuario                   | ADMIN, SUPPORT, USER(*)  |
+| **Loans**     | POST  | `/loans`                         | Crear préstamo                            | ADMIN, SUPPORT           |
+| **Loans**     | PUT   | `/loans/id/{id}`                 | Actualizar préstamo                       | ADMIN, SUPPORT           |
+| **Loans**     | PUT   | `/loans/id/{id}/return`          | Marcar devolución                         | ADMIN, SUPPORT           |
+
+> \* USER solo puede ver sus propios préstamos.
+
+
+## 🔒 Seguridad.
+
+✔ **Autenticación.**
+
+- JWT firmado con clave secreta.
+
+- Expiración de 1 hora.
+
+- Renovación mediante login.
+
+✔ **Autorización por roles.**
+
+- USER → acceso al panel de usuario.
+
+- SUPPORT → acceso a paneles de administración, sin permisos destructivos.
+
+- ADMIN → control total del sistema.
+
+✔ **Protección en backend.**
+
+- Middlewares:
+
+    - verifyToken
+
+    - verifyRole
+
+    - validateUserExists
+
+- Prevención de autopromoción de roles.
+
+- Validación estricta de parámetros y payloads.
+
+✔ **Protección en frontend.**
+
+- Rutas protegidas con ProtectedRoute.
+
+- Ocultación de acciones según rol.
+
+- Validación del token en cada llamada Axios.
+
+
+## 🧩 Módulos Implementados.
+
+✔ **Usuarios**
+✔ **Libros**
+✔ **Autores**
+✔ **Editores**
+✔ **Categorías**
+✔ **Préstamos**
+✔ **Dashboard de usuario**
+✔ **Dashboard de administrador**
+✔ **Gestión de portadas y PDFs**
+✔ **Seguridad avanzada por roles**
+
+
+## 🛠️ Tecnologías utilizadas.
+
+**Frontend**
+
+- ⚛️ React 18 + TypeScript
+
+- 🎨 Tailwind CSS
+
+- 🎭 Framer Motion
+
+- 📦 Vite
+
+- 🔌 Axios
+
+- 🐬 MySQL (Docker)
+
+- 🟦 Node.js + Express + Prisma ORM
+
+- 🟧 Spring Boot (versión alternativa en desarrollo)
+
+**Backend**
+
+- 🟩 Node.js + Express
+
+- 🟦 Prisma ORM
+
+- 🐬 MySQL (Docker)
+
+- 🔐 JWT + Middlewares de seguridad
+
+**Otros**
+
+- 🐳 Docker
+
+- 🧪 Postman (pruebas de API)
+
+
+## 📂 Estructura del Proyecto.
+
+src/
+ ├─ components/
+ ├─ pages/
+ │   ├─ login/
+ │   ├─ dashboard/
+ │   ├─ admin/
+ │   └─ categories/
+ ├─ services/
+ │   ├─ books.service.ts
+ │   ├─ users.service.ts
+ │   ├─ categories.service.ts
+ │   └─ loans.service.ts
+ ├─ utils/
+ │   ├─ auth.storage.ts
+ │   └─ helpers.ts
+ └─ App.tsx
+
+
+## 🔐 Flujo de Autenticación.
+
+[Usuario] → Login → Backend valida credenciales
+     ↓
+Backend genera JWT (1h)
+     ↓
+Frontend guarda token en localStorage
+     ↓
+Axios envía token en cada petición
+     ↓
+Backend valida token + rol
+     ↓
+Acceso permitido o denegado
+
+
+## 🚀 Instalación y ejecución.
+
+1. **Clonar el repositorio frontend en local.**
+
 ```bash
 git clone https://github.com/DEVSAM1966/Biblioteca-codigojava-front.git
 cd Biblioteca-codigojava-front
 ```
-2. **Instalar dependencias**
+
+2. **Instalar dependencias.**
+
 ```bash
 npm install
 ```
-3. **Instalar del backend en NodeJS en local**
+
+3. **Clonar el repositorio backend en local.**
+
 ```bash
 git clone https://github.com/DEVSAM1966/Biblioteca-code-cafe.git
 ```
 
-ATENCIÓN.  Se debe seguir las recomendaciones del README.md del proyecto para que la parte backend funcione sin problemas.
+    ⚠ Sigue las instrucciones del README del backend para configurar Docker, Prisma y la BD.
 
-De base no hay ningun fichero PDF (libro) ni JPG (portada) para que el tamaño no de problemas en el repositorio de GitHub.  Se debera dar de alta libros y subir los ficheros siguiendo las normas del backend via Postman o bien desde el frontend en el panel de administrador.
 
-4. **Inicia el servidor Backend de desarrollo**
+4. **Arrancar Docker (MySQL).**
+
 Para usuarios de Linux.
+
 ```bash
 sudo systemctl start docker
 ```
 
 Para usuarios de Windows.
-- Arrancar el programa Docker Desktop.
-- Seleccionar el contenedor que contenga la BD del proyecto y pulsar el botón Start (si no arranco automaticamente).  El nombre del contenedor es:  **biblio_mysql**
 
-A continuación.
+- Abrir Docker Desktop
+
+- Iniciar el contenedor biblio_mysql
+
+
+5. **Iniciar backend.**
+
 ```bash
 npm run dev
 ```
 
-5. **Inicia el servidor Frontend de desarrollo**
+6. **Iniciar frontend.**
+
 ```bash
 npm run dev
 ```
@@ -125,13 +499,47 @@ npm run dev
 - ADMIN. Acceso a los paneñes de usuario, administracion.  Puede borrar registros.
 
 
+## 🗺️ Roadmap.
+
+🔜 **Próximas mejoras.**
+
+- Mejor visualización de préstamos en el panel de usuario.
+
+- Dashboard avanzado con estadísticas.
+
+- Integración con backend Spring Boot.
+
+- Sistema de notificaciones por correo.
+
+- Exportación de informes.
+
+- Tests unitarios y de integración.
+
+
+## 🤝 Contribución.
+
+Las contribuciones son bienvenidas.
+Para colaborar:
+
+1. Haz un fork del repositorio.
+
+2. Crea una rama con tu mejora.
+
+3. Envía un Pull Request.
+
+4. Avisa del PR, al correo electrónico: **desarrollo.devsam@gmail.com**
+
+
+## 📄 Licencia.
+
+Este proyecto se distribuye bajo la licencia MIT.
+
 
 # Autor.
 
-**Sebastián Asunción**
+**Sebastián Asunción** - **desarrollo.devsam@gmail.com**
 
 ---
-
 
 <div align="center">Thanks for ❤️ Harsh Rathod</div>
 
