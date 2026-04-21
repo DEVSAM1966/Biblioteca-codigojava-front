@@ -107,6 +107,7 @@ Esta versión reemplaza completamente Firebase por un backend propio en Node.js,
 
 
 ## 🌐 Mapa de Endpoints (REST API).
+```mermaid
 flowchart TD
 
     subgraph "AUTH (/auth/)"
@@ -207,6 +208,8 @@ flowchart TD
     style AU5 fill:#E74C3C,stroke:#000,color:#fff
     style P5 fill:#E74C3C,stroke:#000,color:#fff
     style C6 fill:#E74C3C,stroke:#000,color:#fff
+```
+
 
 
 ## 📘 Tabla de Endpoints.
