@@ -244,7 +244,6 @@ Esta versión reemplaza completamente Firebase por un backend propio en Node.js,
 ## 📂 Estructura del Proyecto.
 
 ```bash
-
 src/
  ├─ components/
  ├─ pages/
@@ -261,7 +260,7 @@ src/
  │   ├─ auth.storage.ts
  │   └─ helpers.ts
  └─ App.tsx
-´´´
+```
 
 ## 🔐 Flujo de Autenticación.
 
