@@ -1,14 +1,13 @@
 # 📚 Sistema de Gestión de Bibliotecas / Librerías.
 
 <div align="center">
-
-https://img.shields.io/badge/status-active-brightgreen
-https://img.shields.io/badge/frontend-React%2018-blue
-https://img.shields.io/badge/backend-Node.js%20%2B%20Express-green
-https://img.shields.io/badge/database-MySQL-orange
-https://img.shields.io/badge/license-MIT-lightgrey
-
+  <img src="https://img.shields.io/badge/status-active-brightgreen" />
+  <img src="https://img.shields.io/badge/frontend-React%2018-blue" />
+  <img src="https://img.shields.io/badge/backend-Node.js%20%2B%20Express-green" />
+  <img src="https://img.shields.io/badge/database-MySQL-orange" />
+  <img src="https://img.shields.io/badge/license-MIT-lightgrey" />
 </div>
+
 
 Proyecto basado en el trabajo original del Sr. Harsh Rathod, quien desarrolló un sistema moderno de biblioteca online con React, Firebase y Tailwind CSS.
 Repositorio original: https://github.com/panduthegang
@@ -99,147 +98,115 @@ Esta versión reemplaza completamente Firebase por un backend propio en Node.js,
 
 ## 🏗️ Arquitectura del Sistema.
 
-graph TD
-    %% Arquitectura general del sistema
-
-    subgraph Frontend
-    A[React + TS + Vite<br/>Tailwind CSS<br/>Axios<br/>React Router]
-    end
-
-    subgraph Backend
-    B[Node.js + Express<br/>Prisma ORM<br/>Middlewares de seguridad<br/>Validación de roles]
-    end
-
-    subgraph Database
-    C[(MySQL - Docker)]
-    end
-
-    A -- "HTTP/REST + JWT" --> B
-    B -- "SQL" --> C
-    
-    style A fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
-    style B fill:#3C873A,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#00758F,stroke:#333,stroke-width:2px,color:#fff
+![](./public/Arquitectura.png)
 
 
 ## 🧬 Diagrama UML (Modelo de Dominio).
 
-@startuml
-
-class User {
-  + userId: number
-  + name: string
-  + email: string
-  + passwordHash: string
-  + role: UserRole
-}
-
-enum UserRole {
-  ADMIN
-  SUPPORT
-  USER
-}
-
-class Book {
-  + bookId: number
-  + title: string
-  + isbn: string
-  + description: string
-  + coverPath: string
-  + filePath: string
-  + availableCopies: number
-}
-
-class Author {
-  + authorId: number
-  + name: string
-  + bio: string
-}
-
-class Publisher {
-  + publisherId: number
-  + name: string
-  + country: string
-}
-
-class Category {
-  + categoryId: number
-  + nameCategory: string
-  + subtopicCategory: string
-}
-
-class Loan {
-  + loanId: number
-  + startDate: Date
-  + dueDate: Date
-  + returnDate: Date
-  + status: LoanStatus
-}
-
-enum LoanStatus {
-  ACTIVE
-  RETURNED
-  LATE
-}
-
-User "1" -- "0..*" Loan : has
-Book "1" -- "0..*" Loan : is loaned in
-Book "1" -- "0..*" Author : written by
-Book "1" -- "0..*" Category : categorized as
-Book "1" -- "1" Publisher : published by
-
-@enduml
+![](./public/uml.png)
 
 
 ## 🌐 Mapa de Endpoints (REST API).
-/auth
- ├─ POST /login
- └─ POST /register
+flowchart TD
 
-/users
- ├─ GET    /users
- ├─ GET    /users/id/{id}
- ├─ POST   /users
- ├─ PUT    /users/id/{id}
- └─ DELETE /users/id/{id}
+    subgraph "AUTH (/auth/)"
+        A1[POST /login]
+        A2[POST /register]
+    end
 
-/books
- ├─ GET    /books
- ├─ GET    /books/id/{id}
- ├─ GET    /books/isbn/{isbn}
- ├─ POST   /books
- ├─ PUT    /books/id/{id}
- └─ DELETE /books/id/{id}
+    subgraph "USERS (/users/)"
+        U1[GET /users]
+        U2[GET /users/{id}]
+        U3[POST /users]
+        U4[PUT /users/{id}]
+        U5[DELETE /users/{id}]
+    end
 
-/authors
- ├─ GET    /authors
- ├─ GET    /authors/id/{id}
- ├─ POST   /authors
- ├─ PUT    /authors/id/{id}
- └─ DELETE /authors/id/{id}
+    subgraph "BOOKS (/books/)"
+        B1[GET /books]
+        B2[GET /books/{id}]
+        B3[GET /books/isbn/{isbn}]
+        B4[POST /books]
+        B5[PUT /books/{id}]
+        B6[DELETE /books/{id}]
+    end
 
-/publishers
- ├─ GET    /publishers
- ├─ GET    /publishers/id/{id}
- ├─ POST   /publishers
- ├─ PUT    /publishers/id/{id}
- └─ DELETE /publishers/id/{id}
+    subgraph "AUTHORS (/authors/)"
+        AU1[GET /authors]
+        AU2[GET /authors/{id}]
+        AU3[POST /authors]
+        AU4[PUT /authors/{id}]
+        AU5[DELETE /authors/{id}]
+    end
 
-/categories
- ├─ GET    /categories
- ├─ GET    /categories/id/{id}
- ├─ GET    /categories/name/{name}
- ├─ POST   /categories
- ├─ PUT    /categories/id/{id}
- └─ DELETE /categories/id/{id}
+    subgraph "PUBLISHERS (/publishers/)"
+        P1[GET /publishers]
+        P2[GET /publishers/{id}]
+        P3[POST /publishers]
+        P4[PUT /publishers/{id}]
+        P5[DELETE /publishers/{id}]
+    end
 
-/loans
- ├─ GET    /loans
- ├─ GET    /loans/id/{id}
- ├─ GET    /loans/user/{userId}
- ├─ POST   /loans
- ├─ PUT    /loans/id/{id}
- └─ PUT    /loans/id/{id}/return
+    subgraph "CATEGORIES (/categories/)"
+        C1[GET /categories]
+        C2[GET /categories/{id}]
+        C3[GET /categories/name/{name}]
+        C4[POST /categories]
+        C5[PUT /categories/{id}]
+        C6[DELETE /categories/{id}]
+    end
+
+    subgraph "LOANS (/loans/)"
+        L1[GET /loans]
+        L2[GET /loans/{id}]
+        L3[GET /loans/user/{userId}]
+        L4[POST /loans]
+        L5[PUT /loans/{id}]
+        L6[PUT /loans/{id}/return]
+    end
+
+    %% GET → Azul
+    style U1 fill:#1E90FF,stroke:#000,color:#fff
+    style U2 fill:#1E90FF,stroke:#000,color:#fff
+    style B1 fill:#1E90FF,stroke:#000,color:#fff
+    style B2 fill:#1E90FF,stroke:#000,color:#fff
+    style B3 fill:#1E90FF,stroke:#000,color:#fff
+    style AU1 fill:#1E90FF,stroke:#000,color:#fff
+    style AU2 fill:#1E90FF,stroke:#000,color:#fff
+    style P1 fill:#1E90FF,stroke:#000,color:#fff
+    style P2 fill:#1E90FF,stroke:#000,color:#fff
+    style C1 fill:#1E90FF,stroke:#000,color:#fff
+    style C2 fill:#1E90FF,stroke:#000,color:#fff
+    style C3 fill:#1E90FF,stroke:#000,color:#fff
+    style L1 fill:#1E90FF,stroke:#000,color:#fff
+    style L2 fill:#1E90FF,stroke:#000,color:#fff
+    style L3 fill:#1E90FF,stroke:#000,color:#fff
+
+    %% POST → Verde
+    style A1 fill:#2ECC71,stroke:#000,color:#fff
+    style A2 fill:#2ECC71,stroke:#000,color:#fff
+    style U3 fill:#2ECC71,stroke:#000,color:#fff
+    style B4 fill:#2ECC71,stroke:#000,color:#fff
+    style AU3 fill:#2ECC71,stroke:#000,color:#fff
+    style P3 fill:#2ECC71,stroke:#000,color:#fff
+    style C4 fill:#2ECC71,stroke:#000,color:#fff
+    style L4 fill:#2ECC71,stroke:#000,color:#fff
+
+    %% PUT → Amarillo
+    style U4 fill:#F1C40F,stroke:#000,color:#000
+    style B5 fill:#F1C40F,stroke:#000,color:#000
+    style AU4 fill:#F1C40F,stroke:#000,color:#000
+    style P4 fill:#F1C40F,stroke:#000,color:#000
+    style C5 fill:#F1C40F,stroke:#000,color:#000
+    style L5 fill:#F1C40F,stroke:#000,color:#000
+    style L6 fill:#F1C40F,stroke:#000,color:#000
+
+    %% DELETE → Rojo
+    style U5 fill:#E74C3C,stroke:#000,color:#fff
+    style B6 fill:#E74C3C,stroke:#000,color:#fff
+    style AU5 fill:#E74C3C,stroke:#000,color:#fff
+    style P5 fill:#E74C3C,stroke:#000,color:#fff
+    style C6 fill:#E74C3C,stroke:#000,color:#fff
 
 
 ## 📘 Tabla de Endpoints.
@@ -379,6 +346,8 @@ Book "1" -- "1" Publisher : published by
 
 ## 📂 Estructura del Proyecto.
 
+```bash
+
 src/
  ├─ components/
  ├─ pages/
@@ -395,21 +364,17 @@ src/
  │   ├─ auth.storage.ts
  │   └─ helpers.ts
  └─ App.tsx
-
+´´´
 
 ## 🔐 Flujo de Autenticación.
 
-[Usuario] → Login → Backend valida credenciales
-     ↓
-Backend genera JWT (1h)
-     ↓
-Frontend guarda token en localStorage
-     ↓
-Axios envía token en cada petición
-     ↓
-Backend valida token + rol
-     ↓
-Acceso permitido o denegado
+1. Usuario envía credenciales (email + password)
+2. Backend valida credenciales
+3. Backend genera JWT (1h)
+4. Frontend guarda token en localStorage
+5. Axios envía token en cada petición
+6. Backend valida token + rol
+7. Acceso permitido o denegado
 
 
 ## 🚀 Instalación y ejecución.
