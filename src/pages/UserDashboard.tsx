@@ -27,6 +27,8 @@ const UserDashboard = () => {
   const [detailedBook, setDetailedBook] = useState<DetailedBook | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [borrowedIsbns, setBorrowedIsbns] = useState<Set<string>>(new Set());
+
   const { ref: headerRef, inView: headerInView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -45,6 +47,16 @@ const UserDashboard = () => {
       ...loan,
       dueDate: due.toISOString(),
     };
+  };
+
+  // 🔵 Filtro universal de préstamos activos
+  const filterActiveLoans = (loans: ActiveLoan[]) => {
+    const today = new Date();
+    return loans
+      .map(addDueDate)
+      .filter(loan =>
+        !loan.returnDate || new Date(loan.returnDate) >= today
+      );
   };
 
   // Redirección si no hay usuario
@@ -70,7 +82,22 @@ const UserDashboard = () => {
         console.log("BOOKS FROM BACKEND:", booksData);
 
         setBooks(booksData);
-        setBorrowedBooks(loansData.map(addDueDate));
+        
+        // Guardamos SOLO préstamos activos
+        const today = new Date();
+
+        const activeLoans = loansData
+          .map(addDueDate)
+          .filter(loan =>
+            !loan.returnDate || new Date(loan.returnDate) >= today
+        );
+
+        setBorrowedBooks(activeLoans);
+        // ===========================================
+        // NUEVO: Set con los ISBN de libros prestados
+        // ===========================================
+        setBorrowedIsbns(new Set(activeLoans.map(b => b.isbn)));
+
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -103,7 +130,11 @@ const UserDashboard = () => {
 
       // Actualizar préstamos
       const updatedLoans = await getMyLoans();
-      setBorrowedBooks(updatedLoans.map(addDueDate));
+      const activeLoans = filterActiveLoans(updatedLoans);
+
+      setBorrowedBooks(activeLoans);
+      setBorrowedIsbns(new Set(activeLoans.map(b => b.isbn)));
+
 
       // Actualizar libros
       const updatedBooks = await getBooks();
@@ -122,22 +153,26 @@ const UserDashboard = () => {
     if (!currentUser) return;
 
     try {
-      // CORREGIDO: buscar por isbn, no bookId
       const loan = borrowedBooks.find((l) => l.isbn === isbn);
       if (!loan) return;
 
-      // CORREGIDO: loan.loanId, no loan.id
       await returnLoan(loan.loanId);
 
       const updatedLoans = await getMyLoans();
-      setBorrowedBooks(updatedLoans.map(addDueDate));
+
+      const activeLoans = filterActiveLoans(updatedLoans);
+      setBorrowedBooks(activeLoans);
+      setBorrowedIsbns(new Set(activeLoans.map(b => b.isbn)));
 
       const updatedBooks = await getBooks();
       setBooks(updatedBooks);
+
+
     } catch (error) {
       console.error("Error returning book:", error);
     }
-  };
+};
+
 
   // ---------------------------
   //      READ LATER
@@ -149,6 +184,19 @@ const UserDashboard = () => {
       setSelectedBook(null);
     } catch (error) {
       console.error("Error fetching detailed book:", error);
+    }
+  };
+
+  // ---------------------------
+  //   READ LATER FROM BORROWED
+  // ---------------------------
+  const handleReadBorrowed = async (isbn: string) => {
+    try {
+      const fileData = await getBookFileByISBN(isbn);
+      setPdfUrl(fileData.fileUrl);
+      setShowPdfModal(true);
+    } catch (error) {
+      console.error("Error opening borrowed book PDF:", error);
     }
   };
 
@@ -198,6 +246,7 @@ const UserDashboard = () => {
           borrowedBooks={borrowedBooks}
           handleReturn={(isbn) => handleReturn(isbn)}
           getDaysRemaining={getDaysRemaining}
+          onRead={(isbn) => handleReadBorrowed(isbn)}
         />
       )}
 
@@ -209,6 +258,7 @@ const UserDashboard = () => {
           handleBorrow={handleBorrow}
           BACKEND_URL={BACKEND_URL}
           onReadLater={handleReadLater}
+          borrowedIsbns={borrowedIsbns}   // <-- NUEVO
         />
       )}
 
