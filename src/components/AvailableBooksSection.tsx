@@ -9,6 +9,7 @@ interface AvailableBooksSectionProps {
   handleBorrow: (isbn: string) => void;
   BACKEND_URL: string;
   onReadLater: (isbn: string) => void;
+  borrowedIsbns: Set<string>;   // <-- NUEVO
 }
 
 export const AvailableBooksSection = ({
@@ -17,7 +18,8 @@ export const AvailableBooksSection = ({
   setSelectedBook,
   handleBorrow,
   BACKEND_URL,
-  onReadLater
+  onReadLater,
+  borrowedIsbns,   // <-- NUEVO
 }: AvailableBooksSectionProps) => {
   return (
     <motion.div
@@ -34,7 +36,10 @@ export const AvailableBooksSection = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {filteredBooks.map((book, index) => (
+        {filteredBooks.map((book, index) => {
+          const isBorrowed = borrowedIsbns.has(book.isbn);   // <-- NUEVO
+
+          return (
           <motion.div
             key={book.isbn}
             initial={{ opacity: 0, y: 20 }}
@@ -91,42 +96,54 @@ export const AvailableBooksSection = ({
                   </span>
 
                   <div className="flex items-center gap-2">
-                    
-                    {/* Read Later */}
+
+                    {/* Read Later (Watch) */}
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={!isBorrowed ? { scale: 1.05 } : {}}
+                      whileTap={!isBorrowed ? { scale: 0.95 } : {}}
+                      disabled={isBorrowed}
                       onClick={(e) => {
                         e.stopPropagation();
-                        onReadLater(book.isbn);
+                        if (!isBorrowed) onReadLater(book.isbn);
                       }}
-                      className="px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 text-gray-800 border border-gray-300 hover:bg-gray-300 transition-all duration-300"
+                      className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-300
+                        ${isBorrowed
+                          ? "bg-gray-300 text-gray-500 border-gray-400 cursor-not-allowed"
+                          : "bg-gray-200 text-gray-800 border-gray-300 hover:bg-gray-300"
+                        }`}
                     >
-                      Watch
+                      {isBorrowed ? "Borrowed" : "Watch"}
                     </motion.button>
 
                     {/* Borrow */}
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={!isBorrowed ? { scale: 1.05 } : {}}
+                      whileTap={!isBorrowed ? { scale: 0.95 } : {}}
+                      disabled={isBorrowed}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleBorrow(book.isbn);
+                        if (!isBorrowed) handleBorrow(book.isbn);
                       }}
-                      className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-blue-500/20"
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 shadow-lg
+                        ${isBorrowed
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
+                          : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-blue-500/20"
+                        }`}
                     >
                       <BookOpen className="h-4 w-4" />
-                      <span>Borrow</span>
-                      <ArrowRight className="h-4 w-4" />
+                      <span>{isBorrowed ? "Borrowed" : "Borrow"}</span>
+                      {!isBorrowed && <ArrowRight className="h-4 w-4" />}
                     </motion.button>
 
                   </div>
+
                 </div>
               </div>
             </div>
           </motion.div>
-        ))}
-      </div>
+          );
+        })}
+      </div>  
     </motion.div>
   );
 };

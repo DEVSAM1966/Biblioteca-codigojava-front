@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
 import { BookOpen, RotateCcw, Clock } from "lucide-react";
 import { Book, ActiveLoan } from "../types";
+import { BACKEND_URL } from "../config";
 
 interface BorrowedBooksSectionProps {
   books: Book[];
   borrowedBooks: ActiveLoan[];
   handleReturn: (isbn: string) => void;
   getDaysRemaining: (dueDate: string) => number;
+  onRead: (isbn: string) => void; 
 }
 
 export const BorrowedBooksSection = ({
@@ -14,6 +16,7 @@ export const BorrowedBooksSection = ({
   borrowedBooks,
   handleReturn,
   getDaysRemaining,
+  onRead,
 }: BorrowedBooksSectionProps) => {
   return (
     <motion.div
@@ -31,7 +34,7 @@ export const BorrowedBooksSection = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {borrowedBooks.map((loan, index) => {
-          const book = books.find((b) => b.isbn === loan.bookId);
+          const book = books.find((b) => b.isbn === loan.isbn);
 
           if (!book) return null;
 
@@ -40,7 +43,7 @@ export const BorrowedBooksSection = ({
 
           return (
             <motion.div
-              key={loan.id}
+              key={loan.loanId}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
@@ -52,7 +55,7 @@ export const BorrowedBooksSection = ({
                 <div className="relative w-full md:w-1/3">
                   <div className="aspect-[3/4] relative">
                     <img
-                      src={book.bookCover}
+                      src={`${BACKEND_URL}/${book.bookCover}`}
                       alt={book.title}
                       className="absolute inset-0 w-full h-full object-cover"
                     />
@@ -82,16 +85,32 @@ export const BorrowedBooksSection = ({
                     </span>
                   </div>
 
-                  {/* Return Button */}
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handleReturn(book.isbn)}
-                    className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-rose-600 text-white px-4 py-2 rounded-lg hover:from-red-600 hover:to-rose-700 transition-all duration-300 shadow-lg shadow-red-500/20"
-                  >
-                    <RotateCcw className="h-4 w-4" />
-                    <span>Return</span>
-                  </motion.button>
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-3 mt-4">
+
+                    {/* Read Button */}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => onRead(book.isbn)}
+                      className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-blue-500/20 w-full sm:w-auto"
+                    >
+                      <BookOpen className="h-4 w-4" />
+                      <span>Read</span>
+                    </motion.button>
+
+                    {/* Return Button */}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleReturn(book.isbn)}
+                      className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-rose-600 text-white px-4 py-2 rounded-lg hover:from-red-600 hover:to-rose-700 transition-all duration-300 shadow-lg shadow-red-500/20 w-full sm:w-auto"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      <span>Return</span>
+                    </motion.button>
+
+                  </div>
                 </div>
               </div>
             </motion.div>

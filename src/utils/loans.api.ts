@@ -52,8 +52,8 @@ export const createLoan = async (isbn: string, userId: number): Promise<void> =>
 
 // Devolver préstamo
 export const returnLoan = async (loanId: number): Promise<void> => {
-  const response = await fetch(`${BACKEND_URL}/loans/${loanId}`, {
-    method: "PATCH",
+  const response = await fetch(`${BACKEND_URL}/loans/id/${loanId}`, {
+    method: "DELETE",
     headers: authHeaders(),
   });
 
