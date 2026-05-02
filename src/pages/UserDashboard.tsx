@@ -15,9 +15,14 @@ import { getCurrentUser } from "../utils/auth.storage";
 import { BACKEND_URL } from "../config";
 import { useNavigate } from "react-router-dom";
 
+import { Toast } from "../components/Toast";  
+import { useToast } from "../components/hooks/useToast";
+
 const UserDashboard = () => {
   const navigate = useNavigate();
   const currentUser = getCurrentUser();
+
+  const { toastMessage, showToast, hideToast } = useToast();
 
   const [books, setBooks] = useState<Book[]>([]);
   const [borrowedBooks, setBorrowedBooks] = useState<ActiveLoan[]>([]);
@@ -120,7 +125,13 @@ const UserDashboard = () => {
     try {
       if (!currentUser) throw new Error("User not authenticated");
 
-      // CORREGIDO: userId correcto
+      // 🔵 Control de máximo 2 préstamos activos
+      if (borrowedBooks.length >= 2) {
+        showToast("Has alcanzado el máximo de 2 préstamos activos.");
+        return;
+      }
+
+      // Crear préstamo
       await createLoan(isbn, currentUser.userId);
 
       // Mostrar PDF
@@ -131,7 +142,6 @@ const UserDashboard = () => {
       // Actualizar préstamos
       const updatedLoans = await getMyLoans();
       const activeLoans = filterActiveLoans(updatedLoans);
-
       setBorrowedBooks(activeLoans);
       setBorrowedIsbns(new Set(activeLoans.map(b => b.isbn)));
 
@@ -297,6 +307,10 @@ const UserDashboard = () => {
         </div>
       )}
 
+      {/* 🔵 Toast lugar donde se renderiza */}
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={hideToast} />
+      )}
     </div>
   );
 };
