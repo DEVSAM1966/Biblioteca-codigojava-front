@@ -21,7 +21,7 @@ export const DetailedBookView = ({ book, onLoan, BACKEND_URL, onBack }: Detailed
           onClick={onBack}
           className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
         >
-          ← Back
+          ← Volver
         </button>
       </div>
       
@@ -44,23 +44,23 @@ export const DetailedBookView = ({ book, onLoan, BACKEND_URL, onBack }: Detailed
             <p className="text-gray-700">{book.summary}</p>
           )}
 
-          <p><strong>Pages:</strong> {book.pages ?? "Unknown"}</p>
-          <p><strong>Language:</strong> {book.language ?? "Unknown"}</p>
+          <p><strong>Páginas:</strong> {book.pages ?? "Unknown"}</p>
+          <p><strong>Idioma:</strong> {book.language ?? "Unknown"}</p>
 
-          <p><strong>Author:</strong> {book.nameAuthor ?? "Unknown"}</p>
+          <p><strong>Autor:</strong> {book.nameAuthor ?? "Unknown"}</p>
 
           {book.authors && (
-            <p><strong>Authors:</strong> {book.authors}</p>
+            <p><strong>Autores:</strong> {book.authors}</p>
           )}
 
-          <p><strong>Publisher:</strong> {book.namePublisher ?? "Unknown"}</p>
+          <p><strong>Editorial:</strong> {book.namePublisher ?? "Unknown"}</p>
 
           <button
             onClick={() => onLoan(book.isbn)}
             className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
           >
             <BookOpen className="h-5 w-5" />
-            Loan
+            Prestar
           </button>
         </div>
       </div>

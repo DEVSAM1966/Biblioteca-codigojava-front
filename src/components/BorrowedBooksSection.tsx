@@ -29,7 +29,7 @@ export const BorrowedBooksSection = ({
         <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-lg">
           <BookOpen className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">Borrowed Books</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Libros Prestados</h2>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -68,7 +68,7 @@ export const BorrowedBooksSection = ({
                   <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
                     {book.title}
                   </h3>
-                  <p className="text-lg text-gray-600 mb-2">By {book.nameAuthor}</p>
+                  <p className="text-lg text-gray-600 mb-2">Autor: {book.nameAuthor}</p>
                   <p className="text-sm text-gray-500 mb-4">ISBN: {book.isbn}</p>
 
                   {/* Due Date */}
@@ -81,7 +81,7 @@ export const BorrowedBooksSection = ({
                     >
                       {isOverdue
                         ? `Overdue by ${Math.abs(daysRemaining)} days`
-                        : `${daysRemaining} days remaining`}
+                        : `${daysRemaining} días restantes`}
                     </span>
                   </div>
 
@@ -96,7 +96,7 @@ export const BorrowedBooksSection = ({
                       className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-blue-500/20 w-full sm:w-auto"
                     >
                       <BookOpen className="h-4 w-4" />
-                      <span>Read</span>
+                      <span>Leer</span>
                     </motion.button>
 
                     {/* Return Button */}
@@ -107,7 +107,7 @@ export const BorrowedBooksSection = ({
                       className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-rose-600 text-white px-4 py-2 rounded-lg hover:from-red-600 hover:to-rose-700 transition-all duration-300 shadow-lg shadow-red-500/20 w-full sm:w-auto"
                     >
                       <RotateCcw className="h-4 w-4" />
-                      <span>Return</span>
+                      <span>Devolver</span>
                     </motion.button>
 
                   </div>

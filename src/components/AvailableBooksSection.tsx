@@ -32,7 +32,7 @@ export const AvailableBooksSection = ({
         <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-2 rounded-lg">
           <Bookmark className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">Available Books</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Catalogo Libros</h2>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -72,18 +72,18 @@ export const AvailableBooksSection = ({
                   <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
                     {book.title}
                   </h3>
-                  <p className="text-lg text-gray-600 mb-2">By {book.nameAuthor}</p>
+                  <p className="text-lg text-gray-600 mb-2">Autor; {book.nameAuthor}</p>
                   <p className="text-sm text-gray-500 mb-4">ISBN: {book.isbn}</p>
 
                   <div className="mb-4">
                     <p className="text-gray-700 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
-                      Category: {book.nameCategory} - {book.subtopicCategory}
+                      Categoría: {book.nameCategory} - {book.subtopicCategory}
                     </p>
                   </div>
 
                   <div className="mb-4">
                     <p className="text-gray-700 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
-                      Language: {book.language}
+                      Idioma: {book.language}
                     </p>
                   </div>
                 </div>
@@ -92,7 +92,7 @@ export const AvailableBooksSection = ({
                   
                   {/* Availability Badge */}
                   <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                    Available to read
+                    Disponible
                   </span>
 
                   <div className="flex items-center gap-2">
@@ -112,7 +112,7 @@ export const AvailableBooksSection = ({
                           : "bg-gray-200 text-gray-800 border-gray-300 hover:bg-gray-300"
                         }`}
                     >
-                      {isBorrowed ? "Borrowed" : "Watch"}
+                      {isBorrowed ? "Prestado" : "Ver"}
                     </motion.button>
 
                     {/* Borrow */}
@@ -131,7 +131,7 @@ export const AvailableBooksSection = ({
                         }`}
                     >
                       <BookOpen className="h-4 w-4" />
-                      <span>{isBorrowed ? "Borrowed" : "Borrow"}</span>
+                      <span>{isBorrowed ? "Prestado" : "Préstamo"}</span>
                       {!isBorrowed && <ArrowRight className="h-4 w-4" />}
                     </motion.button>
 

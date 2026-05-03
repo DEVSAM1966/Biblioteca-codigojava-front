@@ -44,7 +44,7 @@ const UserDashboard = () => {
 
   // Añadir dueDate (14 días después)
   const addDueDate = (loan: ActiveLoan): ActiveLoan => {
-    const borrow = new Date(loan.loanDate); // CORREGIDO
+    const borrow = new Date(loan.loanDate); 
     const due = new Date(borrow);
     due.setDate(due.getDate() + 14);
 
@@ -84,7 +84,7 @@ const UserDashboard = () => {
           getMyLoans(),
         ]);
 
-        console.log("BOOKS FROM BACKEND:", booksData);
+        console.log("LIBROS DESDE EL BACKEND:", booksData);
 
         setBooks(booksData);
         
@@ -104,7 +104,7 @@ const UserDashboard = () => {
         setBorrowedIsbns(new Set(activeLoans.map(b => b.isbn)));
 
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error al obtener los datos de libros: ", error);
       } finally {
         setLoading(false);
       }
@@ -152,7 +152,7 @@ const UserDashboard = () => {
 
       setSelectedBook(null);
     } catch (error) {
-      console.error("Error borrowing book:", error);
+      console.error("Error préstamo libro: ", error);
     }
   };
 
@@ -179,7 +179,7 @@ const UserDashboard = () => {
 
 
     } catch (error) {
-      console.error("Error returning book:", error);
+      console.error("Error devuelto por libro: ", error);
     }
 };
 
@@ -193,7 +193,7 @@ const UserDashboard = () => {
       setDetailedBook(book);
       setSelectedBook(null);
     } catch (error) {
-      console.error("Error fetching detailed book:", error);
+      console.error("Error al obtener el libro detallado: ", error);
     }
   };
 
@@ -206,7 +206,7 @@ const UserDashboard = () => {
       setPdfUrl(fileData.fileUrl);
       setShowPdfModal(true);
     } catch (error) {
-      console.error("Error opening borrowed book PDF:", error);
+      console.error("Error abriendo el PDF de un libro prestado:", error);
     }
   };
 
@@ -268,7 +268,7 @@ const UserDashboard = () => {
           handleBorrow={handleBorrow}
           BACKEND_URL={BACKEND_URL}
           onReadLater={handleReadLater}
-          borrowedIsbns={borrowedIsbns}   // <-- NUEVO
+          borrowedIsbns={borrowedIsbns}   
         />
       )}
 
