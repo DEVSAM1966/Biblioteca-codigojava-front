@@ -24,25 +24,25 @@ export const DashboardHeader = ({
     >
       <div className="relative z-10">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          Welcome to Library Code Java
+          Bienvenido a Biblioteca Código Java
         </h1>
 
-        <p className="text-lg text-blue-100 max-w-2xl">
-          Discover a world of knowledge through our carefully curated collection of books
+        <p className="text-lg text-blue-100 w-full">
+          Descubre un mundo de conocimiento a través de nuestra cuidada colección de libros.
         </p>
 
         <div className="mt-6 flex flex-wrap gap-4">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl">
             <BookMarked className="h-5 w-5" />
             <span className="font-medium">
-              {borrowedCount} Book{borrowedCount !== 1 ? "s" : ""} Borrowed
+              {borrowedCount} Libro{borrowedCount !== 1 ? "s" : ""} Prestados
             </span>
           </div>
 
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl">
             <BookOpen className="h-5 w-5" />
             <span className="font-medium">
-              {availableCount} Book{availableCount !== 1 ? "s" : ""} Found
+              {availableCount} Libro{availableCount !== 1 ? "s" : ""} Disponibles
             </span>
           </div>
         </div>

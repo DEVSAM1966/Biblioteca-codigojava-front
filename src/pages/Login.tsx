@@ -31,13 +31,13 @@ const Login = () => {
       const result = await loginApi(email, password);
 
       if (import.meta.env.DEV) {
-        console.log("LOGIN RESULT:", result);
-        console.log("ROLE FROM BACKEND:", result.user.role);
+        console.log("LOGIN RESULTADO: ", result);
+        console.log("ROL DESDE BACKEND:", result.user.role);
       }
 
       saveAuthData(result.user, result.authorization);
 
-      toast.success('Welcome back!', {
+      toast.success('Bienvenido de nuevo!', {
         icon: '👋',
         style: {
           borderRadius: '10px',
@@ -52,14 +52,14 @@ const Login = () => {
 
     } catch (error: any) {
       console.error('Login error:', error);
-      toast.error(error.message ?? 'Invalid email or password');
+      toast.error(error.message ?? 'Incorrecto E-mail o contraseña');
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleLogin = () => {
-    toast.error("Google login is disabled in this version");
+    toast.error("Google login está desactivado por ahora.");
   };
 
   return (
@@ -96,7 +96,7 @@ const Login = () => {
               transition={{ delay: 0.3 }}
               className="text-3xl font-bold text-center text-white mb-8"
             >
-              Welcome Back
+              Bienvenido de nuevo a Código Java
             </motion.h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -112,7 +112,7 @@ const Login = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm focus:border-white/40 focus:ring-2 focus:ring-white/20 transition-colors text-white placeholder-white/60"
-                    placeholder="Email address"
+                    placeholder="Dirección correo electrónico"
                     required
                     disabled={loading}
                   />
@@ -131,7 +131,7 @@ const Login = () => {
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm focus:border-white/40 focus:ring-2 focus:ring-white/20 transition-colors text-white placeholder-white/60"
-                    placeholder="Password"
+                    placeholder="Contraseña"
                     required
                     disabled={loading}
                   />
@@ -152,12 +152,12 @@ const Login = () => {
                   {loading ? (
                     <div className="flex items-center justify-center">
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                      Signing in...
+                      Iniciando sesión...
                     </div>
                   ) : (
                     <div className="flex items-center justify-center">
                       <LogIn className="h-5 w-5 mr-2" />
-                      Sign in with Email
+                      Iniciando login con E-mail
                     </div>
                   )}
                 </button>
@@ -183,7 +183,7 @@ const Login = () => {
                     className="w-full bg-white/10 text-white px-6 py-3 rounded-xl opacity-50 cursor-not-allowed border border-white/20"
                   >
                     <div className="flex items-center justify-center">
-                      Google login disabled
+                      Google login desactivado
                     </div>
                   </button>
                 </motion.div>
@@ -198,12 +198,12 @@ const Login = () => {
             className="py-4 text-center bg-white/5 backdrop-blur-sm border-t border-white/10"
           >
             <p className="text-white/80">
-              Don't have an account?{' '}
+              No tienes una cuenta?{' '}
               <Link
                 to="/register"
                 className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
               >
-                Sign up
+                Regístrate
               </Link>
             </p>
           </motion.div>

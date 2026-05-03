@@ -30,7 +30,7 @@ const AdminDashboard = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
-          Admin Dashboard
+          Panel de Administración
         </h1>
         <p className="text-gray-600 mt-1">
           Bienvenido, {currentUser.fullname}. Gestión administrativa de la biblioteca.
@@ -68,7 +68,7 @@ const AdminDashboard = () => {
         {activeSection === "books" && <BooksSection />}
         {activeSection === "loans" && <LoansSection />}
         {activeSection === "categories" && <CategoriesSection />}
-        {activeSection === "history" && <div>CRUD History aquí</div>}
+        {activeSection === "history" && <div>CRUD History - Pendiente de implementación</div>}
       </div>
     </div>
   );

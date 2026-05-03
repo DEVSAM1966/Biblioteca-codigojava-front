@@ -1,14 +1,9 @@
 export interface User {
-  userId: number;
-  fullname: string;
-  registrationDate: string;
-  role: 'ADMIN' | 'SUPPORT' | 'USER';
-  userDrop: boolean;
-}
-
-export interface SignDto {
-  user: User;
-  authorization: string;
+  userId: number;                       // ID del usuario
+  fullname: string;                     // Nombre completo del usuario  
+  registrationDate: string;             // Fecha de registro del usuario (YYYY-MM-DD)
+  role: 'ADMIN' | 'SUPPORT' | 'USER';   // Rol del usuario (ADMIN, SUPPORT o USER)
+  userDrop: boolean;                    // Indica si el usuario ha sido dado de baja (true) o no (false)
 }
 
 
@@ -16,71 +11,58 @@ export interface SignDto {
 // NEW BACKEND BOOK LIGHT MODEL 
 // ============================
 export interface Book {
-  isbn: string;
-  title: string;
-  language: string;
-  bookCover: string;
-  nameAuthor: string;
-  nameCategory: string;
-  subtopicCategory: string;
+  isbn: string;                       // ISBN del libro
+  title: string;                      // Título del libro
+  language: string;                   // Idioma del libro
+  bookCover: string;                  // URL de la portada del libro
+  nameAuthor: string;                 // Nombre del autor del libro
+  nameCategory: string;               // Nombre de la categoría del libro
+  subtopicCategory: string;           // Subtema de la categoría del libro  
 }
 
 // ============================ 
 // NEW BACKEND BOOK HIGH MODEL 
 // ============================
 export interface DetailedBook {
-  isbn: string;
-  title: string;
-  pages: number | null;
-  summary: string | null;
-  editionDate: string | null;
-  bookCover: string | null;
-  language: string | null;
-  nameAuthor: string | null;
-  authors: string | null; 
-  nameCategory: string | null;
-  subtopicCategory: string | null;
-  namePublisher: string | null;
+  isbn: string;                       // ISBN del libro
+  title: string;                      // Título del libro
+  pages: number | null;               // Número de páginas del libro (puede ser null si no se conoce) 
+  summary: string | null;             // Resumen del libro (puede ser null si no se conoce)
+  editionDate: string | null;         // Fecha de edición del libro (puede ser null si no se conoce) 
+  bookCover: string | null;           // URL de la portada del libro (puede ser null si no se conoce)
+  language: string | null;            // Idioma del libro (puede ser null si no se conoce)
+  nameAuthor: string | null;          // Nombre del autor del libro (puede ser null si no se conoce)
+  authors: string | null;             // Autores del libro (puede ser null si no se conoce)
+  nameCategory: string | null;        // Nombre de la categoría del libro (puede ser null si no se conoce)
+  subtopicCategory: string | null;    // Subtema de la categoría del libro (puede ser null si no se conoce)
+  namePublisher: string | null;       // Nombre del editor del libro (puede ser null si no se conoce)
 }
 
 // ========================
 // FIND FILE BOOK MODEL
 // ========================
 export interface BookFileResponse {
-  fileUrl: string;
+  fileUrl: string;        // URL del archivo del libro
 }
 
 // ========================
 // NEW BACKEND AUTHOR MODEL
 // ========================
 export interface Author {
-  authorId: number; 
-  nameAuthor: string; 
+  authorId: number;        // ID del autor
+  nameAuthor: string;      // Nombre del autor  
 }
 
-export interface BorrowRecord {
-  id: string;
-  bookId: string;
-  userId: string;
-  borrowDate: string;
-  dueDate: string;
-  returnDate: string | null;
-}
-
-export interface BorrowedBookDetails extends BorrowRecord {
-  book: Book;
-  user: User;
-}
 
 // ============================
 // BACKEND LOAN RAW MODEL
 // ============================
 export interface LoanBackend {
-  loanId: number;
-  loanDate: string | null;
-  returnDate: string | null;
-  userId: number | null;
-  isbn: string | null;
+  loanId: number;               // ID del préstamo
+  loanDate: string | null;      // Fecha del préstamo
+  returnDate: string | null;    // Fecha de devolución
+  userId: number | null;        // ID del usuario
+  isbn: string | null;          // ISBN del libro
 }
 
 // ============================
@@ -101,13 +83,13 @@ export interface ActiveLoan {
 // NEW BACKEND PUBLISHER MODEL
 // ===========================
 export interface Publisher {
-        publisherId: number;
-        namePublisher: string;
-        address: string | null;
-        city: string | null;
-        province: string | null;
-        postalCode: string | null;
-        country: string | null;
-        phone: string | null;
-        notes: string | null;
+        publisherId: number;        // ID del editor
+        namePublisher: string;      // Nombre del editor
+        address: string | null;     // Dirección del editor
+        city: string | null;        // Ciudad del editor
+        province: string | null;    // Provincia del editor
+        postalCode: string | null;  // Código postal del editor
+        country: string | null;     // País del editor
+        phone: string | null;       // Teléfono del editor
+        notes: string | null;       // Notas del editor
 }
