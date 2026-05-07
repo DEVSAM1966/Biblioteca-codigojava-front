@@ -24,8 +24,16 @@ export const getMyLoans = async (): Promise<ActiveLoan[]> => {
     throw new Error(`Error fetching loans: ${response.status}`);
   }
 
-  const data = await response.json();
-  return data as ActiveLoan[]; // el backend devuelve directamente un array
+  // Versión funcional para el backend en Spring Boot y Node.js
+  const json = await response.json();
+
+  // ✔ Si Spring Boot → json.data existe
+  // ✔ Si Node.js → json es un array
+  return Array.isArray(json) ? json : json.data; 
+  
+  // Versión funcional para el backend en Node.js
+  // const data = await response.json();
+  // return data as ActiveLoan[]; 
 };
 
 // Crear préstamo
