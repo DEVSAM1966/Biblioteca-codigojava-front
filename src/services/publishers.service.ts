@@ -23,7 +23,9 @@ export const publishersService = {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
         });
-        return res.data.data;
+        return Array.isArray(res.data) ? res.data : res.data.data;
+
+        // return res.data.data;
     },
 
     async create(publisher: Publisher): Promise<Publisher> {
@@ -32,7 +34,9 @@ export const publishersService = {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
         });
-        return res.data.data;
+        return res.data.data ?? res.data;
+
+        // return res.data.data;
     },
 
     async update(id: number, publisher: Publisher): Promise<Publisher> {
@@ -41,7 +45,9 @@ export const publishersService = {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
         });
-        return res.data.data;
+        return res.data.data ?? res.data;
+
+        // return res.data.data;
     },
 
     async delete(id: number): Promise<void> {
@@ -53,11 +59,24 @@ export const publishersService = {
     },
 
     async searchByName(name: string): Promise<Publisher[]> {
-        const res = await axios.get(`${BASE_URL}/name/${encodeURIComponent(name)}`, {
-            headers: {
-                Authorization: `Bearer ${getAuthToken()}`,
-            },
-        });
-        return res.data.data;
-    }
+    try {
+            const res = await axios.get(`${BASE_URL}/name/${encodeURIComponent(name)}`, {
+                headers: {
+                    Authorization: `Bearer ${getAuthToken()}`,
+                },
+            });
+
+            return Array.isArray(res.data) ? res.data : res.data.data;
+
+        } catch (error: any) {
+
+            // ✔ Si el backend devuelve 404 → devolvemos array vacío
+            if (error.response && error.response.status === 404) {
+                return [];
+            }
+
+            // ✔ Si es otro error → lo lanzamos
+            throw error;
+        }
+    },
 };

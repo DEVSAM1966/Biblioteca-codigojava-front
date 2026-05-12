@@ -30,8 +30,9 @@ export const usersService = {
             Authorization: `Bearer ${getAuthToken()}`,
         },
      });
+     return Array.isArray(res.data) ? res.data : res.data.data;
 
-     return res.data.data;
+     // return res.data.data;
     },
 
     // 🔵 Buscar un usuario (GET localhost:9800/users/id/:id)
@@ -41,8 +42,9 @@ export const usersService = {
             Authorization: `Bearer ${getAuthToken()}`,
         },
      });
+     return res.data.data ?? res.data;
 
-     return res.data.data;
+     //return res.data.data;
     },
 
     // 🔵 Buscar un usuario por fullname (GET localhost:9800/users/name/:name)
@@ -52,8 +54,9 @@ export const usersService = {
             Authorization: `Bearer ${getAuthToken()}`,
         },
      });
+     return res.data.data ?? res.data;
 
-     return res.data.data;
+     // return res.data.data;
     },
     
     // 🔵 Crear un usuario (POST localhost:9800/users)
@@ -64,16 +67,37 @@ export const usersService = {
         }, 
       });  
       return res.data.data;
+
+      // return res.data.data;
     },
 
     // 🔵 Update un usuario (PUT localhost:9800/users/id/:id)
     async update(id: number, data: Partial<User>): Promise<User> {
-      const res = await axios.put(`${BASE_URL}/id/${id}`, data, {
+
+      // Payload universal compatible con Spring Boot y Node.js
+      const payload = {
+        userId: id, // ✔ obligatorio para Spring Boot
+
+        fullname: data.fullname?.trim() ?? "",
+        dni: data.dni?.trim() ?? "",
+        address: data.address?.trim() ?? null,
+        city: data.city?.trim() ?? null,
+        province: data.province?.trim() ?? null,
+        postalCode: data.postalCode?.trim() ?? null,
+        country: data.country?.trim() ?? null,
+        phone: data.phone?.trim() ?? "",
+        email: data.email?.trim() ?? "",
+        daysDisciplinary: data.daysDisciplinary ?? 0,
+        role: data.role ?? "USER"
+      };
+      const res = await axios.put(`${BASE_URL}/id/${id}`, payload, {
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       });
-      return res.data.data;
+      return res.data.data ?? res.data;
+
+      // return res.data.data;
     },
 
     // 🔵 Borrado fisico de un usuario (DELETE localhost:9800/users/id/:id)
