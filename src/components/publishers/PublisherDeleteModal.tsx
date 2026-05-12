@@ -39,11 +39,15 @@ const PublisherDeleteModal: React.FC<Props> = ({ publisher, onClose, onConfirm }
                     </button>
 
                     <button 
-                        onClick={() => onConfirm(publisher.publisherId)}
+                        onClick={() => {
+                            onConfirm(publisher.publisherId);
+                            setTimeout(() => onClose(), 600); // ✔ cierre automático del modal
+                        }}
                         className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center gap-2"
                     >
                         Eliminar
                     </button>
+
                 </div>
             </div>
         </div>  

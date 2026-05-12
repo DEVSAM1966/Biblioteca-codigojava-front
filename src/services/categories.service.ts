@@ -18,7 +18,9 @@ export const categoriesService = {
         Authorization: `Bearer ${getAuthToken()}`,
       },
     });
-    return res.data.data;
+    return Array.isArray(res.data) ? res.data : res.data.data;
+
+    // return res.data.data;
   },
 
   // 🔵 NUEVO: Buscar una categoria por ID (GET localhost:9800/categories/id/:id)
@@ -29,7 +31,9 @@ export const categoriesService = {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       });
-      return res.data.data;
+      return res.data.data ?? res.data;
+
+      // return res.data.data;
     } catch {
       return null;
     }
@@ -43,7 +47,9 @@ export const categoriesService = {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       });
-      return res.data.data;
+      return Array.isArray(res.data) ? res.data : res.data.data;
+
+      // return res.data.data;
     } catch {
       return [];
     }
@@ -59,7 +65,9 @@ export const categoriesService = {
         Authorization: `Bearer ${getAuthToken()}`,
       },
     });
-    return res.data.data;
+    return res.data.data ?? res.data;
+
+    // return res.data.data;
   },
 
   // 🔵 NUEVO: Actualizar una categoria (PUT localhost:9800/categories/id/:id)
@@ -70,12 +78,19 @@ export const categoriesService = {
       subtopicCategory?: string | null;
     }
   ): Promise<Category> {
-    const res = await axios.put(`${BASE_URL}/id/${id}`, data, {
+    const payload = {
+      categoryId: id, // ✔ obligatorio para Spring Boot
+      nameCategory: data.nameCategory.trim(),
+      subtopicCategory: data.subtopicCategory?.trim() || null
+    };
+    const res = await axios.put(`${BASE_URL}/id/${id}`, payload, {
       headers: {
         Authorization: `Bearer ${getAuthToken()}`,
       },
     });
-    return res.data.data;
+    return res.data.data ?? res.data;
+
+    // return res.data.data;
   },
 
   // 🔵 NUEVO: Eliminar una categoria (DELETE localhost:9800/categories/id/:id)
@@ -85,6 +100,8 @@ export const categoriesService = {
         Authorization: `Bearer ${getAuthToken()}`,
       },
     });
-    return res.data.data;
+    return res.data.data ?? res.data;
+
+    // return res.data.data;
   },
 };

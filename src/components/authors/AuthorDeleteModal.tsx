@@ -38,12 +38,16 @@ const AuthorDeleteModal: React.FC<Props> = ({ authorName, onClose, onConfirm }) 
           </button>
 
           <button
-            onClick={onConfirm}
+            onClick={() => {
+              onConfirm();               // Ejecuta el borrado
+              setTimeout(() => onClose(), 600);  // Cierra el modal después de 600ms
+            }}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center gap-2"
           >
             <Trash2 className="h-4 w-4" />
             Eliminar
           </button>
+
         </div>
       </div>
     </div>

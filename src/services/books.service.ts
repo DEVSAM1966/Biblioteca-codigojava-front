@@ -38,8 +38,9 @@ export const booksService = {
         Authorization: `Bearer ${getAuthToken()}`,
       },
     });
+    return res.data.data ?? res.data;
 
-    return res.data.data;
+    // return res.data.data;
   },
 
   // 🔵 Buscar libros por título
@@ -49,30 +50,63 @@ export const booksService = {
         Authorization: `Bearer ${getAuthToken()}`,
       },
     });
+    return Array.isArray(res.data) ? res.data : res.data.data;
 
-    return res.data.data;
+    // return res.data.data;
   },
 
   // 🔵 Crear un libro (sin ficheros)
   async create(book: Partial<Book>): Promise<Book> {
-    const res = await axios.post(`${BASE_URL}`, book, {
+
+    const payload = {
+      isbn: book.isbn?.trim(),
+      title: book.title?.trim(),
+      pages: book.pages ?? 0,
+      summary: book.summary?.trim() ?? "",
+      editionDate: book.editionDate,
+      language: book.language?.trim(),
+      authorId: book.authorId,
+      publisherId: book.publisherId,
+      categoryId: book.categoryId,
+      bookCover: book.bookCover ?? null,
+      bookFile: book.bookFile ?? null,
+    };
+    
+    const res = await axios.post(`${BASE_URL}`, payload, {
       headers: {
         Authorization: `Bearer ${getAuthToken()}`,
       },
     });
+    return res.data.data ?? res.data;
 
-    return res.data.data;
+    // return res.data.data;
   },
 
   // 🔵 Actualizar metadatos de un libro (sin ficheros)
   async update(isbn: string, book: Partial<Book>): Promise<Book> {
-    const res = await axios.put(`${BASE_URL}/isbn/${isbn}`, book, {
+
+    const payload = {
+      isbn: isbn.trim(),
+      title: book.title?.trim(),
+      pages: book.pages ?? 0,
+      summary: book.summary?.trim() ?? "",
+      editionDate: book.editionDate,
+      language: book.language?.trim(),
+      authorId: book.authorId,
+      publisherId: book.publisherId,
+      categoryId: book.categoryId,
+      bookCover: book.bookCover ?? null,
+      bookFile: book.bookFile ?? null,
+    };
+    
+    const res = await axios.put(`${BASE_URL}/isbn/${isbn}`, payload, {
       headers: {
         Authorization: `Bearer ${getAuthToken()}`,
       },
     });
+    return res.data.data ?? res.data;
 
-    return res.data.data;
+    // return res.data.data;
   },
 
   // 🔵 Borrar un libro
@@ -97,8 +131,9 @@ export const booksService = {
         "Content-Type": "multipart/form-data",
       },
     });
+    return res.data.data ?? res.data;
 
-    return res.data.data;
+    // return res.data.data;
   }
 
 };
