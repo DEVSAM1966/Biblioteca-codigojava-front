@@ -43,11 +43,14 @@ export const registerApi = async (payload: RegisterPayload): Promise<SignDto> =>
     body: JSON.stringify(payload)
   });
 
+  // Leer el JSON SOLO UNA VEZ
+  const data = await response.json().catch(() => null);
+
+  console.log("📘 [DEBUG] Respuesta Spring Boot registro:", data);
+
   if (!response.ok) {
-    const error = await response.json().catch(() => null);
-    throw new Error(error?.message || 'Registration failed');
+    throw new Error(data?.message || 'Registration failed');
   }
 
-  const data = await response.json();
   return data.data as SignDto;
 };

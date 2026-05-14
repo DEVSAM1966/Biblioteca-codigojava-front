@@ -368,7 +368,7 @@ npm run dev
 
 - Dashboard avanzado con estadísticas.
 
-- Integración con backend Spring Boot.
+- Integrar la tabla histories, feedback de los usuarios al leer un libro dentro del detalle del libro.
 
 - Sistema de notificaciones por correo.
 

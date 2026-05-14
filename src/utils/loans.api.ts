@@ -60,9 +60,14 @@ export const createLoan = async (isbn: string, userId: number): Promise<void> =>
 
 // Devolver préstamo
 export const returnLoan = async (loanId: number): Promise<void> => {
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+
   const response = await fetch(`${BACKEND_URL}/loans/id/${loanId}`, {
-    method: "DELETE",
+    method: "PUT",
     headers: authHeaders(),
+    body: JSON.stringify({
+      returnDate: today
+    }),
   });
 
   if (!response.ok) {
