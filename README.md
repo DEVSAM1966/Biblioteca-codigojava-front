@@ -226,7 +226,7 @@ Esta versión reemplaza completamente Firebase por un backend propio en Node.js,
 
 **Backend**
 
-- 🟩 Node.js + Express
+- 🟩 Node.js + Express  / Java + Spring Boot
 
 - 🟦 Prisma ORM
 
@@ -290,8 +290,18 @@ npm install
 
 3. **Clonar el repositorio backend en local.**
 
+Actualmente este frontend esta preparado para trabajar con backends en Node.js y en Spring Boot, recuerde que no puede tener activo los dos a la vez, además que cada backend tiene su BD propia.
+
+Lo mejor es que eliga uno de los dos.
+
+Backend en Node.js.
 ```bash
 git clone https://github.com/DEVSAM1966/Biblioteca-code-cafe.git
+```
+
+Backend en Spring Boot.
+```bash
+git clone https://github.com/DEVSAM1966/Biblioteca-codigojava.git
 ```
 
     ⚠ Sigue las instrucciones del README del backend para configurar Docker, Prisma y la BD.
